@@ -9,16 +9,5 @@
         "48": "icon48.png",
         "128": "icon.png"
     },
-    "content_scripts":[{
-        "matches":[
-            "http://*",
-            "https://*"
-        ],
-        "js": ["apiify.js"],
-        "run_at":"document_start"
-    }],
-    "page_action":{
-        "default_icon": "icon.png",
-        "default_title": "APIify"
-    }
+	"devtools_page": "apiify.html"
 }
