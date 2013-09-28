@@ -1,4 +1,3 @@
-APIify
-======
+Gagr (Generic API Generator and Recorder)======
 
-Pronounced "API-ify." Record web requests and turn them into reusable code in any programming language.
+Pronounced "Gagger." Record web requests and turn them into reusable code in any programming language.
