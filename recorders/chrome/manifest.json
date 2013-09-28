@@ -1,0 +1,24 @@
+{
+    "name":"APIify",
+    "version":"0.1",
+    "description":" Record web requests and turn them into reusable code in any programming language.",
+    "manifest_version": 2,
+    "incognito": "spanning",
+    "icons": { 
+        "16": "icon16.png",
+        "48": "icon48.png",
+        "128": "icon.png"
+    },
+    "content_scripts":[{
+        "matches":[
+            "http://*",
+            "https://*"
+        ],
+        "js": ["apiify.js"],
+        "run_at":"document_start"
+    }],
+    "page_action":{
+        "default_icon": "icon.png",
+        "default_title": "APIify"
+    }
+}
