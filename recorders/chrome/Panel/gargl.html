@@ -1,12 +1,18 @@
 <html>
+	<head>
+		<link href="gargl.css" rel="stylesheet"></link>
+		<script src="gargl.js"></script>
+	</head>
 	<body>
 		<form>
 			<input id="garglRecord" type="button" value="Start Recording" />
 			<input id="garglClear" type="button" value="Clear Requests" />
+			<br /><br />
+			<label for="garglDomainSearch">Only record requests whose domain contains:</label><input id="garglDomainSearch" type="text" />
 		</form>
 		
 		Requests:
-		<table id="garglTable" style="width:100%">
+		<table id="garglTable">
 			<tr>
 				<th>URL</th>
 				<th>Method</th>
