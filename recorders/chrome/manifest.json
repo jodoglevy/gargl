@@ -1,5 +1,5 @@
 {
-    "name":"Gagr",
+    "name":"Gargl",
     "version":"0.1",
     "description":" Record web requests and turn them into reusable code in any programming language.",
     "manifest_version": 2,
@@ -9,5 +9,5 @@
         "48": "icon48.png",
         "128": "icon.png"
     },
-	"devtools_page": "gagr.html"
+	"devtools_page": "devtools.html"
 }
