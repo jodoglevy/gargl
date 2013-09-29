@@ -7,33 +7,60 @@
 	var requests = [];
 	var removeButtonHtml = "<input type='button' value='Remove' />";
 
-	window.addEventListener('load', function() {
-		var recordButton = document.querySelector('#garglRecord');
-		
-		recordButton.addEventListener('click', function() {
-			shouldRecord = !shouldRecord;
-			recordButton.setAttribute("value",recordingButtonText[shouldRecord]);
-		});
-		
-		document.querySelector('#garglClear').addEventListener('click', function() {
-			var trs = document.querySelectorAll(".garglTableEntry");
-			for(var i = 0; i < trs.length; i ++){
-				trs[i].parentNode.removeChild(trs[i]);
-			}
-			
-			requests = [];
-		});
-	});
-		
+	function toggleRecord() {
+		shouldRecord = !shouldRecord;
+		document.querySelector('#garglRecord').setAttribute("value",recordingButtonText[shouldRecord]);
+	}
 	
-	chrome.devtools.network.onRequestFinished.addListener(function(request) {
-		var url = request.request.url;
-		var questionMarkIndex = url.indexOf("?");
-		var urlWithoutQueryString = questionMarkIndex !== -1 ? url.substr(0,questionMarkIndex) : url;
+	function clearRequestsTable() {
+		requests = [];
 		
-		var domain = urlWithoutQueryString.substring(urlWithoutQueryString.indexOf('/')+2);
+		var trs = document.querySelectorAll(".garglTableEntry");
+		for(var i = 0; i < trs.length; i ++){
+			trs[i].parentNode.removeChild(trs[i]);
+		}
+	}
+	
+	function removeQueryStringFromUrl(url) {
+		var questionMarkIndex = url.indexOf("?");
+		return (questionMarkIndex !== -1 ? url.substr(0,questionMarkIndex) : url);
+	}
+	
+	function getDomainOfUrl(url) {
+		var domain = url.substring(url.indexOf('/')+2);
 		var slashIndex = domain.indexOf("/");
-		domain = slashIndex !== -1 ? domain.substr(0,slashIndex) : domain;
+		return (slashIndex !== -1 ? domain.substr(0,slashIndex) : domain);
+	}
+	
+	function convertHarQueryStringObjectToString(harQueryStringObj) {
+		var queryString = "";
+		for(var i = 0; i < harQueryStringObj.length; i++) {
+			var param = harQueryStringObj[i];
+			
+			if(i != 0) queryString += "&";
+			queryString += param.name;
+			if(param.value && param.value.length > 0) queryString += "=" + param.value;
+		}
+		
+		return queryString;
+	}
+	
+	function addRowToRequestsTable(urlWithoutQueryString, method, queryString, postData) {
+		var tr = document.createElement("tr");
+		tr.setAttribute("class","garglTableEntry");
+		
+		tr.innerHTML = "<td>" + urlWithoutQueryString + "</td>";
+		tr.innerHTML += "<td>" + method + "</td>";
+		tr.innerHTML += "<td>" + decodeURIComponent(queryString) + "</td>";
+		tr.innerHTML += "<td>" + decodeURIComponent(postData) + "</td>";
+		tr.innerHTML += "<td>" + removeButtonHtml + "</td>";
+		
+		document.querySelector("#garglTable").appendChild(tr);
+	}
+	
+	function trackRequest(request) {
+		var urlWithoutQueryString = removeQueryStringFromUrl(request.request.url);
+		var domain = getDomainOfUrl(urlWithoutQueryString);
 		
 		if(shouldRecord && !urlWithoutQueryString.match(/.gif$|.jpeg$|.jpg$|.png$|.js$|.css$/)) {
 			var domainMustContain = document.querySelector("#garglDomainSearch").value;
@@ -41,26 +68,17 @@
 			
 			requests.push(request);			
 			
-			var queryString = "";
-			for(var i = 0; i < request.request.queryString.length; i++) {
-				var param = request.request.queryString[i];
-				
-				if(i != 0) queryString += "&";
-				queryString += param.name;
-				if(param.value && param.value.length > 0) queryString += "=" + param.value;
-			}
-			
+			var queryString = convertHarQueryStringObjectToString(request.request.queryString);
 			var postData = request.request.postData ? request.request.postData.text : ""
 			
-			var tr = document.createElement("tr");
-			tr.setAttribute("class","garglTableEntry");
-			tr.innerHTML = "<td>" + urlWithoutQueryString + "</td>";
-			tr.innerHTML += "<td>" + request.request.method + "</td>";
-			tr.innerHTML += "<td>" + decodeURIComponent(queryString) + "</td>";
-			tr.innerHTML += "<td>" + decodeURIComponent(postData) + "</td>";
-			tr.innerHTML += "<td>" + removeButtonHtml + "</td>";
-			
-			document.querySelector("#garglTable").appendChild(tr);
+			addRowToRequestsTable(urlWithoutQueryString, request.request.method, queryString, postData);
 		}
+	}
+	
+	window.addEventListener('load', function() {
+		document.querySelector('#garglRecord').addEventListener('click', toggleRecord);
+		document.querySelector('#garglClear').addEventListener('click', clearRequestsTable);
 	});
+	
+	chrome.devtools.network.onRequestFinished.addListener(trackRequest);
 })();
