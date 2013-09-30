@@ -7,6 +7,8 @@
 	var requests = [];
 	var nextId = 0;
 	var removeButtonHtml = "<input type='button' value='Remove'";
+	var functionNameInputHtml = "<input type='text' name='funcName'";
+	var functionDescriptionInputHtml = "<input type='text' name='funcDescription'";
 	
 	function toggleRecord() {
 		shouldRecord = !shouldRecord;
@@ -49,10 +51,14 @@
 	
 	function addRowToRequestsTable(idNumber, urlWithoutQueryString, method, queryString, postData) {
 		var removeButtonId = "removeButton" + idNumber;
-		var tr = document.createElement("tr");
+		var funcNameInputId = "funcNameInput" + idNumber;
+		var funcDescriptionInputId = "funcDescriptionInput" + idNumber;
 		
+		var tr = document.createElement("tr");
 		tr.setAttribute("class","garglTableEntry");
-		tr.innerHTML = "<td>" + urlWithoutQueryString + "</td>";
+		tr.innerHTML = "<td>" + functionNameInputHtml + " id='" + funcNameInputId + "' /></td>";
+		tr.innerHTML += "<td>" + functionDescriptionInputHtml + " id='" + funcDescriptionInputId + "' /></td>";
+		tr.innerHTML += "<td>" + urlWithoutQueryString + "</td>";
 		tr.innerHTML += "<td>" + method + "</td>";
 		tr.innerHTML += "<td>" + decodeURIComponent(queryString) + "</td>";
 		tr.innerHTML += "<td>" + decodeURIComponent(postData) + "</td>";
