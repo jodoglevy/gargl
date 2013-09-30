@@ -93,9 +93,45 @@
 		}
 	}
 	
+	function cleanUpDownloadLink(a) {
+		a.textContent = 'Downloaded';
+		a.dataset.disabled = true;
+
+		// Need a small delay for the revokeObjectURL to work properly.
+		setTimeout(function() {
+			window.URL.revokeObjectURL(a.href);
+			a.parentNode.removeChild(a);
+		}, 1500);
+	}
+	
+	function createDownloadLink() {
+		window.URL = window.webkitURL || window.URL;
+		var prevLink = document.querySelector('a');
+		var fileName = document.querySelector("#garglSaveFileName").value;
+		
+		if (prevLink) window.URL.revokeObjectURL(prevLink.href);
+
+		var bb = new Blob(["content goes here"], {type: 'text/plain'});
+
+		var a = prevLink || document.createElement('a');
+		a.download = ((fileName.length > 0 ? fileName : "gargl") + ".gtf");
+		a.href = window.URL.createObjectURL(bb);
+		a.textContent = 'Click to download';
+
+		a.dataset.downloadurl = ['text/plain', a.download, a.href].join(':');
+
+		document.querySelector("#garglSaveHolder").appendChild(a);
+
+		a.onclick = function(e) {
+			if ('disabled' in this.dataset) return false;
+			cleanUpDownloadLink(this);
+		};
+	}
+	
 	window.addEventListener('load', function() {
 		document.querySelector('#garglRecord').addEventListener('click', toggleRecord);
 		document.querySelector('#garglClear').addEventListener('click', clearRequestsTable);
+		document.querySelector('#garglSave').addEventListener('click', createDownloadLink);
 	});
 	
 	chrome.devtools.network.onRequestFinished.addListener(trackRequest);
