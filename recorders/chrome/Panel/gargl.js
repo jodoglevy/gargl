@@ -5,8 +5,9 @@
 		true: "Stop Recording"
 	};
 	var requests = [];
-	var removeButtonHtml = "<input type='button' value='Remove' />";
-
+	var nextId = 0;
+	var removeButtonHtml = "<input type='button' value='Remove'";
+	
 	function toggleRecord() {
 		shouldRecord = !shouldRecord;
 		document.querySelector('#garglRecord').setAttribute("value",recordingButtonText[shouldRecord]);
@@ -14,6 +15,7 @@
 	
 	function clearRequestsTable() {
 		requests = [];
+		nextId = 0;
 		
 		var trs = document.querySelectorAll(".garglTableEntry");
 		for(var i = 0; i < trs.length; i ++){
@@ -45,17 +47,26 @@
 		return queryString;
 	}
 	
-	function addRowToRequestsTable(urlWithoutQueryString, method, queryString, postData) {
+	function addRowToRequestsTable(idNumber, urlWithoutQueryString, method, queryString, postData) {
+		var removeButtonId = "removeButton" + idNumber;
 		var tr = document.createElement("tr");
-		tr.setAttribute("class","garglTableEntry");
 		
+		tr.setAttribute("class","garglTableEntry");
 		tr.innerHTML = "<td>" + urlWithoutQueryString + "</td>";
 		tr.innerHTML += "<td>" + method + "</td>";
 		tr.innerHTML += "<td>" + decodeURIComponent(queryString) + "</td>";
 		tr.innerHTML += "<td>" + decodeURIComponent(postData) + "</td>";
-		tr.innerHTML += "<td>" + removeButtonHtml + "</td>";
+		tr.innerHTML += "<td>" + removeButtonHtml + " id='" + removeButtonId + "' /></td>";
 		
 		document.querySelector("#garglTable").appendChild(tr);
+		
+		var removeButton = document.querySelector("#" + removeButtonId);
+		removeButton.addEventListener('click', function() {
+			requests[idNumber] = null;
+			
+			var tr = removeButton.parentNode.parentNode;
+			tr.parentNode.removeChild(tr);
+		});
 	}
 	
 	function trackRequest(request) {
@@ -71,7 +82,8 @@
 			var queryString = convertHarQueryStringObjectToString(request.request.queryString);
 			var postData = request.request.postData ? request.request.postData.text : ""
 			
-			addRowToRequestsTable(urlWithoutQueryString, request.request.method, queryString, postData);
+			addRowToRequestsTable(nextId, urlWithoutQueryString, request.request.method, queryString, postData);
+			nextId ++;
 		}
 	}
 	
