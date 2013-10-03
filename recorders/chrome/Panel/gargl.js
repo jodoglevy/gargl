@@ -1,25 +1,37 @@
 (function() {
 	var shouldRecord = false;
-	var recordingButtonText = {
+	var requests = [];
+	var nextId = 0;
+	
+	const removeButtonHtml = "<input type='button' value='Remove'";
+	const functionNameInputHtml = "<input type='text' name='funcName'";
+	const functionDescriptionInputHtml = "<input type='text' name='funcDescription'";
+
+	const garglRecordSelector = "#garglRecord";
+	const garglTableEntrySelector = ".garglTableEntry";
+	const garglTableSelector = "#garglTable";
+	const garglDomainSearchSelector = "#garglDomainSearch";
+	const garglSaveFileNameSelector = "#garglSaveFileName";
+	const garglSaveHolderSelector = "#garglSaveHolder";
+	const garglClearSelector = "#garglClear";
+	const garglSaveSelector = "#garglSave";
+
+	const recordingButtonText = {
 		false: "Start Recording",
 		true: "Stop Recording"
 	};
-	var requests = [];
-	var nextId = 0;
-	var removeButtonHtml = "<input type='button' value='Remove'";
-	var functionNameInputHtml = "<input type='text' name='funcName'";
-	var functionDescriptionInputHtml = "<input type='text' name='funcDescription'";
-	
+
+
 	function toggleRecord() {
 		shouldRecord = !shouldRecord;
-		document.querySelector('#garglRecord').setAttribute("value",recordingButtonText[shouldRecord]);
+		document.querySelector(garglRecordSelector).setAttribute("value",recordingButtonText[shouldRecord]);
 	}
 	
 	function clearRequestsTable() {
 		requests = [];
 		nextId = 0;
 		
-		var trs = document.querySelectorAll(".garglTableEntry");
+		var trs = document.querySelectorAll(garglTableEntrySelector);
 		for(var i = 0; i < trs.length; i ++){
 			trs[i].parentNode.removeChild(trs[i]);
 		}
@@ -64,7 +76,7 @@
 		tr.innerHTML += "<td>" + decodeURIComponent(postData) + "</td>";
 		tr.innerHTML += "<td>" + removeButtonHtml + " id='" + removeButtonId + "' /></td>";
 		
-		document.querySelector("#garglTable").appendChild(tr);
+		document.querySelector(garglTableSelector).appendChild(tr);
 		
 		var removeButton = document.querySelector("#" + removeButtonId);
 		removeButton.addEventListener('click', function() {
@@ -80,7 +92,7 @@
 		var domain = getDomainOfUrl(urlWithoutQueryString);
 		
 		if(shouldRecord && !urlWithoutQueryString.match(/.gif$|.jpeg$|.jpg$|.png$|.js$|.css$/)) {
-			var domainMustContain = document.querySelector("#garglDomainSearch").value;
+			var domainMustContain = document.querySelector(garglDomainSearchSelector).value;
 			if(domainMustContain.length > 0 && domain.indexOf(domainMustContain) === -1) return;
 			
 			requests.push(request);			
@@ -107,11 +119,13 @@
 	function createDownloadLink() {
 		window.URL = window.webkitURL || window.URL;
 		var prevLink = document.querySelector('a');
-		var fileName = document.querySelector("#garglSaveFileName").value;
+		var fileName = document.querySelector(garglSaveFileNameSelector).value;
 		
 		if (prevLink) window.URL.revokeObjectURL(prevLink.href);
 
-		var bb = new Blob(["content goes here"], {type: 'text/plain'});
+		var garglFormattedRequests = convertHarArrayToGarglArray(requests);
+		var fileContents = JSON.stringify(garglFormattedRequests, null, "\t");
+		var bb = new Blob([fileContents], {type: 'text/plain'});
 
 		var a = prevLink || document.createElement('a');
 		a.download = ((fileName.length > 0 ? fileName : "gargl") + ".gtf");
@@ -120,18 +134,46 @@
 
 		a.dataset.downloadurl = ['text/plain', a.download, a.href].join(':');
 
-		document.querySelector("#garglSaveHolder").appendChild(a);
+		document.querySelector(garglSaveHolderSelector).appendChild(a);
 
 		a.onclick = function(e) {
 			if ('disabled' in this.dataset) return false;
 			cleanUpDownloadLink(this);
 		};
 	}
+
+	function convertHarArrayToGarglArray(harArray) {
+		var garglArray = [];
+
+		harArray.forEach(function(harItem, itemIndex) {
+			if(!harItem) return;
+
+			delete(harItem.startedDateTime);
+			delete(harItem.time);
+			delete(harItem.cache);
+			delete(harItem.timings);
+			delete(harItem.pageref);
+
+			delete(harItem.request.headersSize);
+			delete(harItem.request.bodySize);
+
+			if(harItem.request.postData) delete(harItem.request.postData.text);
+
+			harItem.response = {
+				headers: harItem.response.headers,
+				cookies: harItem.response.cookies,
+			};
+
+			garglArray.push(harItem);
+		});
+
+		return garglArray;
+	}
 	
 	window.addEventListener('load', function() {
-		document.querySelector('#garglRecord').addEventListener('click', toggleRecord);
-		document.querySelector('#garglClear').addEventListener('click', clearRequestsTable);
-		document.querySelector('#garglSave').addEventListener('click', createDownloadLink);
+		document.querySelector(garglRecordSelector).onclick = toggleRecord;
+		document.querySelector(garglClearSelector).onclick = clearRequestsTable;
+		document.querySelector(garglSaveSelector).onclick = createDownloadLink;
 	});
 	
 	chrome.devtools.network.onRequestFinished.addListener(trackRequest);
