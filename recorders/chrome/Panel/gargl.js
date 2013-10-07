@@ -3,6 +3,8 @@
 	var requests = [];
 	var nextId = 0;
 	
+	const garglSchemaVersion = "1.0";
+
 	const removeButtonHtml = "<input type='button' value='Remove'";
 	const functionNameInputHtml = "<input type='text' name='funcName'";
 	const functionDescriptionInputHtml = "<input type='text' name='funcDescription'";
@@ -11,7 +13,7 @@
 	const garglTableEntrySelector = ".garglTableEntry";
 	const garglTableSelector = "#garglTable";
 	const garglDomainSearchSelector = "#garglDomainSearch";
-	const garglSaveFileNameSelector = "#garglSaveFileName";
+	const garglModuleNameSelector = "#garglModuleName";
 	const garglSaveHolderSelector = "#garglSaveHolder";
 	const garglClearSelector = "#garglClear";
 	const garglSaveSelector = "#garglSave";
@@ -119,16 +121,23 @@
 	function createDownloadLink() {
 		window.URL = window.webkitURL || window.URL;
 		var prevLink = document.querySelector('a');
-		var fileName = document.querySelector(garglSaveFileNameSelector).value;
+		var moduleName = document.querySelector(garglModuleNameSelector).value;
 		
 		if (prevLink) window.URL.revokeObjectURL(prevLink.href);
 
-		var garglFormattedRequests = convertHarArrayToGarglArray(requests);
+		var garglFormattedRequests = {
+			garglSchemaVersion: garglSchemaVersion,
+			moduleVersion: "1.0",
+			moduleName: moduleName,
+			moduleDescription: "",
+			functions: convertHarArrayToGarglArray(requests)
+		};
+
 		var fileContents = JSON.stringify(garglFormattedRequests, null, "\t");
 		var bb = new Blob([fileContents], {type: 'text/plain'});
 
 		var a = prevLink || document.createElement('a');
-		a.download = ((fileName.length > 0 ? fileName : "gargl") + ".gtf");
+		a.download = ((moduleName.length > 0 ? moduleName : "gargl") + ".gtf");
 		a.href = window.URL.createObjectURL(bb);
 		a.textContent = 'Click to download';
 
@@ -148,26 +157,72 @@
 		harArray.forEach(function(harItem, itemIndex) {
 			if(!harItem) return;
 
-			delete(harItem.startedDateTime);
-			delete(harItem.time);
-			delete(harItem.cache);
-			delete(harItem.timings);
-			delete(harItem.pageref);
-
-			delete(harItem.request.headersSize);
-			delete(harItem.request.bodySize);
-
-			if(harItem.request.postData) delete(harItem.request.postData.text);
-
-			harItem.response = {
-				headers: harItem.response.headers,
-				cookies: harItem.response.cookies,
-			};
+			removeUnneededMetadataFromItem(harItem);
+			addGarglMetadataToItem(harItem);
 
 			garglArray.push(harItem);
 		});
 
 		return garglArray;
+	}
+
+	function removeUnneededMetadataFromItem(item) {
+		delete(item.startedDateTime);
+		delete(item.time);
+		delete(item.cache);
+		delete(item.timings);
+		delete(item.pageref);
+
+		delete(item.request.headersSize);
+		delete(item.request.bodySize);
+		delete(item.request.cookies);
+
+		if(item.request) {
+			if(item.request.postData) delete(item.request.postData.text);
+			item.request.headers = removeUnneededHeaders(item.request.headers, /Cookie|Content-Type|Content-Length/i, false);
+		}
+
+		if(item.response) {
+			item.response = {
+				headers: removeUnneededHeaders(item.response.headers, /Set-Cookie/i, true)
+			};
+		}
+	}
+
+	function addGarglMetadataToItem(item) {
+		item.functionName = "";
+		item.functionDescription = "";
+
+		if(item.request) {
+			item.request.url = removeQueryStringFromUrl(item.request.url);
+
+			if(item.request.queryString) {
+				item.request.queryString.forEach(function(queryArg) {
+					queryArg.type = "string";
+					queryArg.description = "";
+					queryArg.value = decodeURIComponent(queryArg.value);
+				});
+			}
+
+			if(item.request.postData && item.request.postData.params) {
+				item.request.postData.params.forEach(function(postArg) {
+					postArg.type = "string";
+					postArg.description = "";
+					postArg.value = decodeURIComponent(postArg.value);
+				});
+			}
+		}
+	}
+
+	function removeUnneededHeaders(headersArray, regexForUnneeded, removeHeaderValuesFromAll) {
+		var headersToKeep = [];
+		headersArray.forEach(function (header) {
+			if(removeHeaderValuesFromAll) delete(header.value);
+
+			if(!header.name.match(regexForUnneeded)) headersToKeep.push(header)
+		});
+
+		return headersToKeep;
 	}
 	
 	window.addEventListener('load', function() {
