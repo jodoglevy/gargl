@@ -13,7 +13,7 @@ Automate any website. Record web requests as they happen and turn them into reus
 The recorders folder contains gargl recorders implemented for different browsers / programs, which let you record Gargl template files (.gtf).
 
 #### Generators
-The generators folder contains gargl generators for different programming languages, which let you convert Gargl template files into modules.
+The generators folder contains gargl generators for different programming languages. These generators let you convert Gargl template files into modules of a chosen programming language.
 
 #### Templates
-The templates folder contains Gargl template files which have already been recorded for various web sites, as well as a sample Gargl template file to show the schema of the file.
+The templates folder contains Gargl template files which have already been recorded for various web sites, as well as a sample Gargl template file to show the schema.
