@@ -14,6 +14,7 @@
 	const garglTableSelector = "#garglTable";
 	const garglDomainSearchSelector = "#garglDomainSearch";
 	const garglModuleNameSelector = "#garglModuleName";
+	const garglModuleDescriptionSelector = "#garglModuleDescription";
 	const garglSaveHolderSelector = "#garglSaveHolder";
 	const garglClearSelector = "#garglClear";
 	const garglSaveSelector = "#garglSave";
@@ -122,6 +123,7 @@
 		window.URL = window.webkitURL || window.URL;
 		var prevLink = document.querySelector('a');
 		var moduleName = document.querySelector(garglModuleNameSelector).value;
+		var moduleDescription = document.querySelector(garglModuleDescriptionSelector).value;
 		
 		if (prevLink) window.URL.revokeObjectURL(prevLink.href);
 
@@ -129,7 +131,7 @@
 			garglSchemaVersion: garglSchemaVersion,
 			moduleVersion: "1.0",
 			moduleName: moduleName,
-			moduleDescription: "",
+			moduleDescription: moduleDescription,
 			functions: convertHarArrayToGarglArray(requests)
 		};
 
@@ -157,8 +159,8 @@
 		harArray.forEach(function(harItem, itemIndex) {
 			if(!harItem) return;
 
-			removeUnneededMetadataFromItem(harItem);
-			addGarglMetadataToItem(harItem);
+			removeUnneededMetadataFromItem(harItem, itemIndex);
+			addGarglMetadataToItem(harItem, itemIndex);
 
 			garglArray.push(harItem);
 		});
@@ -166,7 +168,7 @@
 		return garglArray;
 	}
 
-	function removeUnneededMetadataFromItem(item) {
+	function removeUnneededMetadataFromItem(item, itemIndex) {
 		delete(item.startedDateTime);
 		delete(item.time);
 		delete(item.cache);
@@ -189,9 +191,9 @@
 		}
 	}
 
-	function addGarglMetadataToItem(item) {
-		item.functionName = "";
-		item.functionDescription = "";
+	function addGarglMetadataToItem(item, itemIndex) {
+		item.functionName = document.querySelector("#funcNameInput" + itemIndex).value;
+		item.functionDescription = document.querySelector("#funcDescriptionInput" + itemIndex).value;
 
 		if(item.request) {
 			item.request.url = removeQueryStringFromUrl(item.request.url);
