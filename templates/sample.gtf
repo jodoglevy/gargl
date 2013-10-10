@@ -69,7 +69,9 @@
 					},
 					{
 						"name": "Some-Other-Header",
-						"value": "@otherHeaderValue@"
+						"value": "@otherHeaderValue@",
+						"type": "string",
+						"description": "A request header that is user specified"
 					}
 				],
 				"queryString": [],
