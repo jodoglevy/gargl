@@ -1,0 +1,106 @@
+{
+	"garglSchemaVersion": "1.0",
+	"moduleVersion": "1.0",
+	"moduleName": "Sample-Site",
+	"moduleDescription": "API for a sample site that doesn't actually exist!",
+	"functions": [
+		{
+			"functionName": "Function1",
+			"functionDescription": "This is a sample function",
+			"request": {
+				"method": "GET",
+				"url": "http://www.samplesite.com/",
+				"httpVersion": "HTTP/1.1",
+				"headers": [
+					{
+						"name": "Accept-Encoding",
+						"value": "gzip,deflate,sdch"
+					},
+					{
+						"name": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.76 Safari/537.36"
+					}
+				],
+				"queryString": [
+					{
+						"name": "staticParam",
+						"value": "value1"
+					},
+					{
+						"name": "variableParam",
+						"value": "@variableParamValue@",
+						"type": "string",
+						"description": "A query string parameter that is user specified"
+					}
+				]
+			},
+			"response": {
+				"headers": [
+					{
+						"name": "Content-Encoding"
+					},
+					{
+						"name": "Content-Type"
+					},
+					{
+						"name": "Content-Length"
+					},
+					{
+						"name": "Expires"
+					}
+				]
+			}
+		},
+		{
+			"functionName": "Function2",
+			"functionDescription": "This is also a sample function",
+			"request": {
+				"method": "POST",
+				"url": "http://www.samplesite.com/posturl",
+				"httpVersion": "HTTP/1.1",
+				"headers": [
+					{
+						"name": "Accept-Encoding",
+						"value": "gzip,deflate,sdch"
+					},
+					{
+						"name": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.76 Safari/537.36"
+					}
+				],
+				"queryString": [],
+				"postData": {
+					"mimeType": "application/x-www-form-urlencoded",
+					"params": [
+						{
+							"name": "staticParam",
+							"value": "value2"
+						},
+						{
+							"name": "variableParam",
+							"value": "@variableParamValue@",
+							"type": "string",
+							"description": "A post parameter that is user specified"
+						}
+					]
+				}
+			},
+			"response": {
+				"headers": [
+					{
+						"name": "Content-Encoding"
+					},
+					{
+						"name": "Content-Type"
+					},
+					{
+						"name": "Content-Length"
+					},
+					{
+						"name": "Expires"
+					}
+				]
+			}
+		}
+	]
+}

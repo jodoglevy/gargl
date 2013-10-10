@@ -122,7 +122,7 @@
 	function createDownloadLink() {
 		window.URL = window.webkitURL || window.URL;
 		var prevLink = document.querySelector('a');
-		var moduleName = document.querySelector(garglModuleNameSelector).value;
+		var moduleName = document.querySelector(garglModuleNameSelector).value.replace(/ /g, "-");
 		var moduleDescription = document.querySelector(garglModuleDescriptionSelector).value;
 		
 		if (prevLink) window.URL.revokeObjectURL(prevLink.href);
@@ -139,7 +139,7 @@
 		var bb = new Blob([fileContents], {type: 'text/plain'});
 
 		var a = prevLink || document.createElement('a');
-		a.download = ((moduleName.length > 0 ? moduleName : "gargl") + ".gtf");
+		a.download = ((moduleName.length > 0 ? moduleName.toLowerCase() : "gargl") + ".gtf");
 		a.href = window.URL.createObjectURL(bb);
 		a.textContent = 'Click to download';
 
@@ -186,13 +186,13 @@
 
 		if(item.response) {
 			item.response = {
-				headers: removeUnneededHeaders(item.response.headers, /Set-Cookie/i, true)
+				headers: removeUnneededHeaders(item.response.headers, null, true)
 			};
 		}
 	}
 
 	function addGarglMetadataToItem(item, itemIndex) {
-		item.functionName = document.querySelector("#funcNameInput" + itemIndex).value;
+		item.functionName = document.querySelector("#funcNameInput" + itemIndex).value.replace(/ /g, "-");
 		item.functionDescription = document.querySelector("#funcDescriptionInput" + itemIndex).value;
 
 		if(item.request) {
