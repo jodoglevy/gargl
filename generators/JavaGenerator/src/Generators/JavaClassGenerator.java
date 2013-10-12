@@ -2,9 +2,9 @@ package Generators;
 
 import java.util.Map;
 import java.util.Map.Entry;
-import TypeDefinitions.Module;
-import TypeDefinitions.Request;
-import Utilities.Utils;
+import TypeDefinitions.GarglModule;
+import TypeDefinitions.Function;
+import Utilities.Parameter;
 
 public class JavaClassGenerator extends Generator {
 
@@ -47,32 +47,32 @@ public class JavaClassGenerator extends Generator {
 			+ "DataOutputStream wr = new DataOutputStream(con.getOutputStream());\n"
 			+ "wr.writeBytes(postData);\n" + "wr.flush();\n" + "wr.close();\n";
 
-	public JavaClassGenerator(Module module){
+	public JavaClassGenerator(GarglModule module){
 		super(module);
 	}
 	
-	public String generateFunction(Request request) {
+	public String generateFunction(Function function) {
 		// Generate method signature using all necessary parameters
-		String methodSignature = generateMethodSignature(request);
+		String methodSignature = generateMethodSignature(function);
 
 		// Generate strings for setting request method and headers
-		String methodAndHeaders = generateMethodAndHeaders(request);
+		String methodAndHeaders = generateMethodAndHeaders(function);
 
 		// Generate querystring by appending url params and applying
 		// formatting
-		String queryString = generateQueryString(request);
+		String queryString = generateQueryString(function);
 
 		// Surround request.getUrl() with quotes if it is a parameter, and
 		// do nothing if it is a parameter name
 		// Also append ? and querystring
-		String url = Utils.processParameter(request.getUrl(), request) + " + \"?" + queryString
+		String url = Parameter.processParameter(function.getUrl(), function) + " + \"?" + queryString
 				+ "\"";
 
 		// Handle specifics for each type of request
-		if ("POST".equals(request.getMethod())) {
-			String postDataString = generatePostDataString(request.getPostData());
+		if ("POST".equals(function.getMethod())) {
+			String postDataString = generatePostDataString(function.getPostData());
 			methodAndHeaders += String.format(JAVA_POST_REQUEST_FORMAT, postDataString);
-		} else if ("GET".equals(request.getMethod())) {
+		} else if ("GET".equals(function.getMethod())) {
 			// Currently there is no special behavior for GET requests
 		}
 
@@ -89,7 +89,7 @@ public class JavaClassGenerator extends Generator {
 	public void generateClass(String outputLocation) {
 		StringBuilder methodsSB = new StringBuilder();
 
-		for (Request request : this.module.requests) {
+		for (Function request : this.module.functions) {
 			methodsSB.append(generateFunction(request));
 			System.out.println("LOG: Function " + request.getFunctionName() + " created");
 		}
@@ -105,23 +105,23 @@ public class JavaClassGenerator extends Generator {
 				String.format(JAVA_CLASS_FORMAT, filename, methodsSB.toString()));
 	}
 
-	private String generateMethodAndHeaders(Request request) {
+	private String generateMethodAndHeaders(Function function) {
 		StringBuilder sb = new StringBuilder();
 
 		// Set request method
-		sb.append("con.setRequestMethod(\"" + request.getMethod() + "\");\n\n");
+		sb.append("con.setRequestMethod(\"" + function.getMethod() + "\");\n\n");
 
 		// Set request headers
-		sb.append(generateHeaders(request) + "\n");
+		sb.append(generateHeaders(function) + "\n");
 
 		return sb.toString();
 	}
 
-	private String generateHeaders(Request request) {
+	private String generateHeaders(Function function) {
 		StringBuilder sb = new StringBuilder();
-		for (Entry<String, String> header : request.getHeaders().entrySet()) {
+		for (Entry<String, String> header : function.getHeaders().entrySet()) {
 			StringBuilder headerSB = new StringBuilder("\"" + header.getKey() + "\", ");
-			headerSB.append(Utils.processParameter(header.getValue(), request));
+			headerSB.append(Parameter.processParameter(header.getValue(), function));
 
 			// Adding 'con.setRequestProperty(header, value) to overall
 			// StringBuilder
@@ -131,24 +131,24 @@ public class JavaClassGenerator extends Generator {
 		return sb.toString();
 	}
 
-	String generateMethodSignature(Request request) {
+	String generateMethodSignature(Function function) {
 		StringBuilder sb = new StringBuilder();
-		if (request.getArgs().size() > 0) {
-			for (String arg : request.getArgs()) {
+		if (function.getArgs().size() > 0) {
+			for (String arg : function.getArgs()) {
 				sb.append("String " + arg + ",");
 			}
 			sb.deleteCharAt(sb.length() - 1);
 		}
 
-		return String.format(JAVA_METHOD_SIGNATURE, request.getFunctionName(), sb.toString());
+		return String.format(JAVA_METHOD_SIGNATURE, function.getFunctionName(), sb.toString());
 	}
 
 	private String generatePostDataString(Map<String, String> postData) {
 		StringBuilder sb = new StringBuilder();
 		if (postData != null) {
 			for (Entry<String, String> param : postData.entrySet()) {
-				if (Utils.isParameter(param.getValue())) {
-					String paramName = Utils.parameterDecode(param.getValue());
+				if (Parameter.isParameter(param.getValue())) {
+					String paramName = Parameter.parameterDecode(param.getValue());
 					sb.append(param.getKey() + "=\" + " + paramName + " + \"&");
 				} else {
 					sb.append(param.getKey() + "=" + param.getValue() + "&");
@@ -166,11 +166,11 @@ public class JavaClassGenerator extends Generator {
 		return sb.toString();
 	}
 
-	private String generateQueryString(Request request) {
+	private String generateQueryString(Function function) {
 		StringBuilder sb = new StringBuilder();
-		for (Entry<String, String> param : request.getQueryString().entrySet()) {
-			if (Utils.isParameter(param.getValue())) {
-				String paramName = Utils.parameterDecode(param.getValue());
+		for (Entry<String, String> param : function.getQueryString().entrySet()) {
+			if (Parameter.isParameter(param.getValue())) {
+				String paramName = Parameter.parameterDecode(param.getValue());
 				sb.append(param.getKey() + "=\" + " + paramName + " + \"&");
 			} else {
 				sb.append(param.getKey() + "=" + param.getValue() + "&");

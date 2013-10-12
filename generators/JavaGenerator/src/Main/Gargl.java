@@ -2,7 +2,7 @@ package Main;
 
 import Generators.Generator;
 import Generators.JavaClassGenerator;
-import TypeDefinitions.Module;
+import TypeDefinitions.GarglModule;
 import Utilities.JCommanderParser;
 
 import com.beust.jcommander.JCommander;
@@ -10,14 +10,15 @@ import com.beust.jcommander.JCommander;
 public class Gargl {
 	public static void main(String[] args) {
 
-		// Parse command line arguments (currently args is a dummy array)
-		if (args.length == 0) {
-			args = new String[] { "-i", "/home/mross/workspace/Gargl/lib/Mint.gtf","-l","java","-o","/home/mross/workspace/GarglTest/src/" };
-			System.out.println("WARNING: Running with test defaults");
-		}
+		// Parse command line arguments
 
 		JCommanderParser jct = new JCommanderParser();
-		new JCommander(jct, args);
+		JCommander jcmdr = new JCommander(jct, args);
+		
+		if(args == null || args.length == 0 || jct.help){
+			jcmdr .usage();
+			System.exit(0);
+		}
 
 		if (jct.inputFilename == null) {
 			System.out.println("ERROR: Need to specify input filename with -i");
@@ -36,7 +37,7 @@ public class Gargl {
 
 		// Read in file and convert to Module containing function name and Requests
 		InputParser parser = new InputParser(jct.inputFilename);
-		Module mod = parser.parseAndConvert();
+		GarglModule mod = parser.parseAndConvert();
 
 		System.out.println("LOG: Parsed requests " + jct.inputFilename);
 

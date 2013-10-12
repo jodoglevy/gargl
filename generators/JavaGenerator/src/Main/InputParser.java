@@ -7,8 +7,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import TypeDefinitions.Module;
-import TypeDefinitions.Request;
+import TypeDefinitions.GarglModule;
+import TypeDefinitions.Function;
 import Utilities.JsonUtils;
 
 import com.google.gson.Gson;
@@ -16,10 +16,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-/**
- * @author mross
- * 
- */
+
 /**
  * @author mross
  * 
@@ -44,7 +41,7 @@ public class InputParser {
 	 * @return a Module containing all of the requests and metadata for the
 	 *         given file
 	 */
-	public Module parseAndConvert() {
+	public GarglModule parseAndConvert() {
 		// Initialize JSON parser
 		Gson gson = new Gson();
 		String output = new String();
@@ -64,9 +61,11 @@ public class InputParser {
 
 		JsonElement moduleNameElement = moduleJsonObject.get("moduleName");
 		JsonElement moduleDescriptionElement = moduleJsonObject.get("moduleDescription");
+		JsonElement moduleVersionElement = moduleJsonObject.get("moduleDescription");
 
 		String moduleName = "default_module_name";
 		String moduleDescription = "default_module_description";
+		String moduleVersion = "1.0";
 
 		if (moduleNameElement != null && !moduleNameElement.getAsString().isEmpty()) {
 			moduleName = moduleNameElement.getAsString();
@@ -74,6 +73,10 @@ public class InputParser {
 
 		if (moduleDescriptionElement != null && !moduleDescriptionElement.getAsString().isEmpty()) {
 			moduleDescription = moduleDescriptionElement.getAsString();
+		}
+		
+		if (moduleVersionElement != null && !moduleDescriptionElement.getAsString().isEmpty()) {
+			moduleDescription = moduleVersionElement.getAsString();
 		}
 
 		// Get all 'functions' as JsonObjects from the file and add them as a
@@ -96,14 +99,14 @@ public class InputParser {
 		}
 
 		// Parse all JsonObject requests into Requests
-		List<Request> requests = new ArrayList<Request>();
+		List<Function> requests = new ArrayList<Function>();
 		for (JsonElement jsonRequest : requestElements) {
 			JsonObject request = JsonUtils.asJsonObject(jsonRequest);
 			if (request != null) {
 				if (request.get("functionName") != null
 						&& !request.get("functionName").getAsString().isEmpty()) {
 					// Create Request from JSON Request
-					requests.add( new Request(request));
+					requests.add( new Function(request));
 				} else {
 					System.out
 							.println("WARNING: Function not generated because function is empty!");
@@ -113,7 +116,7 @@ public class InputParser {
 
 		// return Module containing metadata (e.g. name, description) and
 		// Requests
-		return new Module(moduleName, moduleDescription, requests);
+		return new GarglModule(moduleName, moduleDescription, moduleVersion, requests);
 	}
 
 	/**

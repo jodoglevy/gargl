@@ -11,9 +11,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import Utilities.JsonUtils;
-import Utilities.Utils;
+import Utilities.Parameter;
 
-public class Request {
+public class Function {
 
 	private String functionName;
 	private List<String> args;
@@ -25,20 +25,20 @@ public class Request {
 	private Map<String, String> postData;
 
 
-	public Request(JsonObject jsonRequest) {
+	public Function(JsonObject jsonRequest) {
 		args = new ArrayList<String>();
 		headers = new HashMap<String, String>();
 		queryString = new HashMap<String,String>();
 		postData = new HashMap<String, String>();
 		
 		// Set up Request object with all properties from JSON request
-		setFunctionName(jsonRequest);
-		setRequestMethod(jsonRequest);
-		setHeaders(JsonUtils.findElement(jsonRequest, "headers"));
-		setUrl(JsonUtils.findElement(jsonRequest, "url"));
-		setQueryString(JsonUtils.findElement(jsonRequest, "queryString"));
+		this.setFunctionName(jsonRequest);
+		this.setRequestMethod(jsonRequest);
+		this.setHeaders(JsonUtils.findElement(jsonRequest, "headers"));
+		this.setUrl(JsonUtils.findElement(jsonRequest, "url"));
+		this.setQueryString(JsonUtils.findElement(jsonRequest, "queryString"));
 		if("POST".equals(this.method)){
-			setPostData(JsonUtils.findElement(jsonRequest, "postData"));
+			this.setPostData(JsonUtils.findElement(jsonRequest, "postData"));
 		}
 	}
 
@@ -59,8 +59,8 @@ public class Request {
 				String name = header.get("name").getAsString();
 				String value = header.get("value").getAsString();
 				this.addHeader(name, value);
-				if (Utils.isParameter(value)) {
-					String paramName = Utils.parameterDecode(value);
+				if (Parameter.isParameter(value)) {
+					String paramName = Parameter.parameterDecode(value);
 					this.addArgument(paramName);
 					System.out.println("Added argument: " + paramName);
 				}
@@ -77,8 +77,8 @@ public class Request {
 				String name = param.get("name").getAsString();
 				String value = param.get("value").getAsString();
 				this.addPostData(name, value);
-				if (Utils.isParameter(value)) {
-					String paramName = Utils.parameterDecode(value);
+				if (Parameter.isParameter(value)) {
+					String paramName = Parameter.parameterDecode(value);
 					this.addArgument(paramName);
 					System.out.println("Added argument: " + paramName);
 				}
@@ -100,8 +100,8 @@ public class Request {
 				String name = queryParam.get("name").getAsString();
 				String value = queryParam.get("value").getAsString();
 				this.addQueryStringParam(name, value);
-				if (Utils.isParameter(value)) {
-					String paramName = Utils.parameterDecode(value);
+				if (Parameter.isParameter(value)) {
+					String paramName = Parameter.parameterDecode(value);
 					this.addArgument(paramName);
 					System.out.println("Added argument: " + paramName);
 				}
@@ -121,8 +121,8 @@ public class Request {
 	private void setUrl(JsonElement jsonRequest) {
 		if (jsonRequest != null) {
 			String url = jsonRequest.getAsString();
-			if (Utils.isParameter(url)) {
-				String paramName = Utils.parameterDecode(url);
+			if (Parameter.isParameter(url)) {
+				String paramName = Parameter.parameterDecode(url);
 				this.addArgument(paramName);
 				System.out.println("Added argument: " + paramName);
 			}
@@ -132,19 +132,19 @@ public class Request {
 	}
 
 	
-	public void addArgument(String argument) {
+	private void addArgument(String argument) {
 		args.add(argument);
 	}
 
-	public void addHeader(String header, String value) {
+	private void addHeader(String header, String value) {
 		headers.put(header, value);
 	}
 
-	public void addPostData(String name, String value) {
+	private void addPostData(String name, String value) {
 		this.postData.put(name, value);
 	}
 
-	public void addQueryStringParam(String name, String value) {
+	private void addQueryStringParam(String name, String value) {
 		this.queryString.put(name, value);
 	}
 
@@ -184,7 +184,7 @@ public class Request {
 		System.out.println(headers);
 	}
 
-	public void removeHeader(String header) {
+	private void removeHeader(String header) {
 		headers.remove(header);
 	}
 }

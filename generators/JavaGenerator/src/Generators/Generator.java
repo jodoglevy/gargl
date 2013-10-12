@@ -4,14 +4,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-import TypeDefinitions.Module;
-import TypeDefinitions.Request;
+import TypeDefinitions.GarglModule;
+import TypeDefinitions.Function;
 
 public abstract class Generator {
 
-	protected Module module;
+	protected GarglModule module;
 
-	public Generator(Module module) {
+	public Generator(GarglModule module) {
 		this.module = module;
 	}
 
