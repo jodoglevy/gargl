@@ -6,8 +6,6 @@ import java.util.List;
 import com.beust.jcommander.Parameter;
 
 public class JCommanderParser {
-	 @Parameter
-	  public List<String> parameters = new ArrayList<String>();
 	 
 	  @Parameter(names = { "-i", "-input" }, description = "Name of input file")
 	  public String inputFilename;
@@ -20,5 +18,4 @@ public class JCommanderParser {
 	 
 	  @Parameter(names = "-debug", description = "Debug mode")
 	  public boolean debug = false;
-
 }

@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import Converters.JsonRequestToRequest;
 import TypeDefinitions.Module;
 import TypeDefinitions.Request;
 import Utilities.JsonUtils;
@@ -28,7 +27,6 @@ import com.google.gson.JsonObject;
 public class InputParser {
 
 	private String filename;
-	private JsonRequestToRequest converter;
 
 	/**
 	 * @param filename
@@ -36,7 +34,6 @@ public class InputParser {
 	 */
 	public InputParser(String filename) {
 		this.filename = filename;
-		this.converter = new JsonRequestToRequest();
 	}
 
 	/**
@@ -105,8 +102,8 @@ public class InputParser {
 			if (request != null) {
 				if (request.get("functionName") != null
 						&& !request.get("functionName").getAsString().isEmpty()) {
-					// Convert JSON request to Request
-					requests.add(converter.Convert(request));
+					// Create Request from JSON Request
+					requests.add( new Request(request));
 				} else {
 					System.out
 							.println("WARNING: Function not generated because function is empty!");

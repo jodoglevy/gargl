@@ -6,6 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+
+import Utilities.JsonUtils;
+import Utilities.Utils;
+
 public class Request {
 
 	private String functionName;
@@ -14,18 +21,117 @@ public class Request {
 	private String url;
 	private String httpVersion;
 	private Map<String, String> queryString;
-	private Cookie cookie;
 	private String method;
 	private Map<String, String> postData;
 
 
-	public Request() {
+	public Request(JsonObject jsonRequest) {
 		args = new ArrayList<String>();
 		headers = new HashMap<String, String>();
 		queryString = new HashMap<String,String>();
 		postData = new HashMap<String, String>();
+		
+		// Set up Request object with all properties from JSON request
+		setFunctionName(jsonRequest);
+		setRequestMethod(jsonRequest);
+		setHeaders(JsonUtils.findElement(jsonRequest, "headers"));
+		setUrl(JsonUtils.findElement(jsonRequest, "url"));
+		setQueryString(JsonUtils.findElement(jsonRequest, "queryString"));
+		if("POST".equals(this.method)){
+			setPostData(JsonUtils.findElement(jsonRequest, "postData"));
+		}
 	}
 
+	private void setFunctionName(JsonObject jsonRequest) {
+		JsonElement functionName = jsonRequest.get("functionName");
+		if (functionName != null) {
+			this.functionName = functionName.getAsString();
+		} else {
+			System.out.println("ERROR: Request object did not contain function name");
+		}
+	}
+	
+	private void setHeaders(JsonElement headers) {
+		JsonArray array_headers = JsonUtils.asJsonArray(headers);
+		if (array_headers != null) {
+			for (JsonElement jHeader : array_headers) {
+				JsonObject header = JsonUtils.asJsonObject(jHeader);
+				String name = header.get("name").getAsString();
+				String value = header.get("value").getAsString();
+				this.addHeader(name, value);
+				if (Utils.isParameter(value)) {
+					String paramName = Utils.parameterDecode(value);
+					this.addArgument(paramName);
+					System.out.println("Added argument: " + paramName);
+				}
+			}
+		}
+	}
+	
+	private void setPostData(JsonElement jsonPostData) {
+		JsonElement paramsElement = JsonUtils.findElement(jsonPostData, "params");
+		JsonArray array_postDataParams = JsonUtils.asJsonArray(paramsElement);
+		if (array_postDataParams != null) {
+			for (JsonElement postParam : array_postDataParams) {
+				JsonObject param = JsonUtils.asJsonObject(postParam);
+				String name = param.get("name").getAsString();
+				String value = param.get("value").getAsString();
+				this.addPostData(name, value);
+				if (Utils.isParameter(value)) {
+					String paramName = Utils.parameterDecode(value);
+					this.addArgument(paramName);
+					System.out.println("Added argument: " + paramName);
+				}
+			}
+		} else {
+			// Log if postData is empty for POST request (it shouldn't be)
+			if ("POST".equals(this.getMethod())) {
+				System.out.println("WARNING: POST request to " + this.getUrl()
+						+ " contains no postData");
+			}
+		}
+	}
+
+	private void setQueryString(JsonElement queryStringParams) {
+		JsonArray array_params = JsonUtils.asJsonArray(queryStringParams);
+		if (array_params != null) {
+			for (JsonElement jQueryParam : array_params) {
+				JsonObject queryParam = JsonUtils.asJsonObject(jQueryParam);
+				String name = queryParam.get("name").getAsString();
+				String value = queryParam.get("value").getAsString();
+				this.addQueryStringParam(name, value);
+				if (Utils.isParameter(value)) {
+					String paramName = Utils.parameterDecode(value);
+					this.addArgument(paramName);
+					System.out.println("Added argument: " + paramName);
+				}
+			}
+		}
+	}
+
+	private void setRequestMethod(JsonObject jsonRequest) {
+		String method = JsonUtils.findElement(jsonRequest, "method").getAsString();
+		if (method != null) {
+			this.method = method;
+		} else {
+			System.out.println("WARNING: Request did not contain method");
+		}
+	}
+
+	private void setUrl(JsonElement jsonRequest) {
+		if (jsonRequest != null) {
+			String url = jsonRequest.getAsString();
+			if (Utils.isParameter(url)) {
+				String paramName = Utils.parameterDecode(url);
+				this.addArgument(paramName);
+				System.out.println("Added argument: " + paramName);
+			}
+
+			this.url = url;
+		}
+	}
+
+	
 	public void addArgument(String argument) {
 		args.add(argument);
 	}
@@ -44,10 +150,6 @@ public class Request {
 
 	public List<String> getArgs() {
 		return args;
-	}
-
-	public Cookie getCookie() {
-		return cookie;
 	}
 
 	public String getFunctionName() {
@@ -85,25 +187,4 @@ public class Request {
 	public void removeHeader(String header) {
 		headers.remove(header);
 	}
-
-	public void setCookie(Cookie cookie) {
-		this.cookie = cookie;
-	}
-
-	public void setFunctionName(String functionName) {
-		this.functionName = functionName;
-	}
-	
-	public void setHttpVersion(String httpVersion) {
-		this.httpVersion = httpVersion;
-	}
-	
-	public void setMethod(String method) {
-		this.method = method;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
-
 }
