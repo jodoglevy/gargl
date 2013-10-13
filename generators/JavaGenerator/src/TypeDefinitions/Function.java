@@ -1,6 +1,5 @@
 package TypeDefinitions;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +15,7 @@ import Utilities.Parameter;
 public class Function {
 
 	private String functionName;
-	private List<String> args;
+	private List<Parameter> parameters;
 	private Map<String, String> headers;
 	private String url;
 	private String httpVersion;
@@ -24,20 +23,19 @@ public class Function {
 	private String method;
 	private Map<String, String> postData;
 
-
 	public Function(JsonObject jsonRequest) {
-		args = new ArrayList<String>();
+		parameters = new ArrayList<Parameter>();
 		headers = new HashMap<String, String>();
-		queryString = new HashMap<String,String>();
+		queryString = new HashMap<String, String>();
 		postData = new HashMap<String, String>();
-		
+
 		// Set up Request object with all properties from JSON request
 		this.setFunctionName(jsonRequest);
 		this.setRequestMethod(jsonRequest);
 		this.setHeaders(JsonUtils.findElement(jsonRequest, "headers"));
 		this.setUrl(JsonUtils.findElement(jsonRequest, "url"));
 		this.setQueryString(JsonUtils.findElement(jsonRequest, "queryString"));
-		if("POST".equals(this.method)){
+		if ("POST".equals(this.method)) {
 			this.setPostData(JsonUtils.findElement(jsonRequest, "postData"));
 		}
 	}
@@ -50,7 +48,7 @@ public class Function {
 			System.out.println("ERROR: Request object did not contain function name");
 		}
 	}
-	
+
 	private void setHeaders(JsonElement headers) {
 		JsonArray array_headers = JsonUtils.asJsonArray(headers);
 		if (array_headers != null) {
@@ -60,14 +58,12 @@ public class Function {
 				String value = header.get("value").getAsString();
 				this.addHeader(name, value);
 				if (Parameter.isParameter(value)) {
-					String paramName = Parameter.parameterDecode(value);
-					this.addArgument(paramName);
-					System.out.println("Added argument: " + paramName);
+					this.addParameter(new Parameter(value));
 				}
 			}
 		}
 	}
-	
+
 	private void setPostData(JsonElement jsonPostData) {
 		JsonElement paramsElement = JsonUtils.findElement(jsonPostData, "params");
 		JsonArray array_postDataParams = JsonUtils.asJsonArray(paramsElement);
@@ -78,9 +74,7 @@ public class Function {
 				String value = param.get("value").getAsString();
 				this.addPostData(name, value);
 				if (Parameter.isParameter(value)) {
-					String paramName = Parameter.parameterDecode(value);
-					this.addArgument(paramName);
-					System.out.println("Added argument: " + paramName);
+					this.addParameter(new Parameter(value));
 				}
 			}
 		} else {
@@ -101,9 +95,7 @@ public class Function {
 				String value = queryParam.get("value").getAsString();
 				this.addQueryStringParam(name, value);
 				if (Parameter.isParameter(value)) {
-					String paramName = Parameter.parameterDecode(value);
-					this.addArgument(paramName);
-					System.out.println("Added argument: " + paramName);
+					this.addParameter(new Parameter(value));
 				}
 			}
 		}
@@ -122,18 +114,15 @@ public class Function {
 		if (jsonRequest != null) {
 			String url = jsonRequest.getAsString();
 			if (Parameter.isParameter(url)) {
-				String paramName = Parameter.parameterDecode(url);
-				this.addArgument(paramName);
-				System.out.println("Added argument: " + paramName);
+				this.addParameter( new Parameter(url));
 			}
 
 			this.url = url;
 		}
 	}
 
-	
-	private void addArgument(String argument) {
-		args.add(argument);
+	private void addParameter(Parameter param) {
+		parameters.add(param);
 	}
 
 	private void addHeader(String header, String value) {
@@ -148,8 +137,8 @@ public class Function {
 		this.queryString.put(name, value);
 	}
 
-	public List<String> getArgs() {
-		return args;
+	public List<Parameter> getParameters() {
+		return parameters;
 	}
 
 	public String getFunctionName() {
@@ -172,7 +161,7 @@ public class Function {
 		return postData;
 	}
 
-	public Map<String, String>getQueryString() {
+	public Map<String, String> getQueryString() {
 		return queryString;
 	}
 

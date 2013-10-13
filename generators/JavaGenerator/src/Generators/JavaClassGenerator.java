@@ -64,7 +64,6 @@ public class JavaClassGenerator extends Generator {
 
 		// Surround request.getUrl() with quotes if it is a parameter, and
 		// do nothing if it is a parameter name
-		// Also append ? and querystring
 		String url = Parameter.processParameter(function.getUrl(), function) + " + \"?" + queryString
 				+ "\"";
 
@@ -133,9 +132,9 @@ public class JavaClassGenerator extends Generator {
 
 	String generateMethodSignature(Function function) {
 		StringBuilder sb = new StringBuilder();
-		if (function.getArgs().size() > 0) {
-			for (String arg : function.getArgs()) {
-				sb.append("String " + arg + ",");
+		if (function.getParameters().size() > 0) {
+			for (Parameter param : function.getParameters()) {
+				sb.append("String " + param.getParameterName() + ",");
 			}
 			sb.deleteCharAt(sb.length() - 1);
 		}
