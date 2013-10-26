@@ -4,6 +4,14 @@
 
 This folder contains Gargl template files which have already been recorded for various web sites, as well as a sample Gargl template file to show the schema. If you generate a new Gargl template for a website and would like to open source it, this is the proper folder where it should be stored.
 
+### Parameterized Values
+
+Certain fields in the gargl *function object* can contain parameterized values. A parameterized value is a value that is not a static string, but rather defined by a parameter to the function it is a part of. To insert a parameterized value, insert the name of the parameter to be added to the function, surrounded by '@' signs. For example, "@title@" would cause a parameter to be added to the function with the name "title."
+
+As of Gargl Schema v1.0, the following fields can contain parameterized values:
+- The *url* field of a *request object* can contain one or more parameterized values.
+- The *value* field of a *request field object* can contain a single parameterized value.
+
 ### Schema v1.0
 
 Gargl template files contain a json object composed of the following fields:
