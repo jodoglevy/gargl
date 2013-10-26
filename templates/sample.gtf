@@ -29,7 +29,6 @@
 					{
 						"name": "variableParam",
 						"value": "@variableParamValue@",
-						"type": "string",
 						"description": "A query string parameter that is user specified"
 					}
 				]
@@ -47,6 +46,16 @@
 					},
 					{
 						"name": "Expires"
+					}
+				],
+				"fields": [
+					{
+						"name": "title",
+						"cssSelector": "h1"
+					},
+					{
+						"name": "username",
+						"cssSelector": "#username"
 					}
 				]
 			}
@@ -70,7 +79,6 @@
 					{
 						"name": "Some-Other-Header",
 						"value": "@otherHeaderValue@",
-						"type": "string",
 						"description": "A request header that is user specified"
 					}
 				],
@@ -85,7 +93,6 @@
 						{
 							"name": "variableParam",
 							"value": "@variableParamValue@",
-							"type": "string",
 							"description": "A post parameter that is user specified"
 						}
 					]
@@ -104,6 +111,16 @@
 					},
 					{
 						"name": "Expires"
+					}
+				],
+				"fields": [
+					{
+						"name": "title",
+						"cssSelector": "h1"
+					},
+					{
+						"name": "username",
+						"cssSelector": "#username"
 					}
 				]
 			}

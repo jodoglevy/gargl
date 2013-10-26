@@ -20,23 +20,34 @@ A gargl template file contains one or more function objects. A function object i
 
 - **functionName**: The string name to be used for this function when a module is generated. Cannot contain spaces. Required.
 - **functionDescription**: A string description of the function. Optional.
-- **request**: A *request object* containing the details of the HTTP request for this function. Described below. Required
-- **response**: A *response object* containing the details of the HTTP response for this function. Described below. Optional
+- **request**: A *request object* containing the details of the HTTP request for this function. Described below. Required.
+- **response**: A *response object* containing the details of the HTTP response for this function. Described below. Optional.
 
 ##### Request object
 
 Each function object contains a single request object. A request object is composed of the following fields:
 
-TBD
+- **method**: The string HTTP method of the request. Required.
+- **url**: The string url of the request. Required.
+- **httpVersion**: The string http version of the request. Required.
+- **headers**: Any array of *request field objects* to send as request headers. Optional. Request headers should not contain "Cookie," "Content-Type," or "Content-Length" headers. 
+- **queryString**: Any array of *request field objects* to send in the request query string. Optional.
+- **postData**: Any array of *request field objects* to send in the request body. Optional.
 
-request headers should not contain "Cookie," "Content-Type," or "Content-Length" headers 
+###### Request Field object
+
+Each request object can contain one or more request field objects. A request field object is composed the following fields:
+
+- **name**: The string name of the request field object. Required.
+- **value**: The string value of the request field object. Required.
+- **description**: The string description of the request field object. Optional.
 
 ##### Response object
 
 Each function object can contain a single response object. A response object is composed of the following fields:
 
-- **headers**: Any array of *response header objects* as described below. Optional
-- **fields**: Any array of *response field objects* as described below. Optional
+- **headers**: Any array of *response header objects* as described below. Optional.
+- **fields**: Any array of *response field objects* as described below. Optional.
 
 ###### Response Header object
 
@@ -49,6 +60,6 @@ Each response object can contain one or more response header objects. A response
 Each response object can contain one or more response field objects. A response field object is a value parsed from the returned html in the response body. A response field object is composed the following fields:
 
 - **name**: The string name of the response field. Required.
-- **cssSelector**: The css selector for the html tag in the response body html whose inner html is the value for this response field object. Required.
+- **cssSelector**: The string css selector for the html tag in the response body html whose inner html is the value for this response field object. Required.
 
 
