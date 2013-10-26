@@ -33,13 +33,22 @@ request headers should not contain "Cookie," "Content-Type," or "Content-Length"
 
 ##### Response object
 
-Each function object can contain a single response object. A response object is composed the following fields:
+Each function object can contain a single response object. A response object is composed of the following fields:
 
 - **headers**: Any array of *response header objects* as described below. Optional
+- **fields**: Any array of *response field objects* as described below. Optional
 
 ###### Response Header object
 
 Each response object can contain one or more response header objects. A response header object is composed the following fields:
 
 - **name**: The string name of the response header which the HTTP request returns. Required.
+
+###### Response Field object
+
+Each response object can contain one or more response field objects. A response field object is a value parsed from the returned html in the response body. A response field object is composed the following fields:
+
+- **name**: The string name of the response field. Required.
+- **cssSelector**: The css selector for the html tag in the response body html whose inner html is the value for this response field object. Required.
+
 
