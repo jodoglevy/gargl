@@ -36,7 +36,7 @@ A gargl template file contains one or more function objects. A function object i
 Each function object contains a single request object. A request object is composed of the following fields:
 
 - **method**: The string HTTP method of the request. Required.
-- **url**: The string url of the request. Required.
+- **url**: The string url of the request. Can contain one or more *parameterized values* or be static. Required.
 - **httpVersion**: The string http version of the request. Required.
 - **headers**: Any array of *request field objects* to send as request headers. Optional. Request headers should not contain "Cookie," "Content-Type," or "Content-Length" headers. 
 - **queryString**: Any array of *request field objects* to send in the request query string. Optional.
@@ -47,7 +47,7 @@ Each function object contains a single request object. A request object is compo
 Each request object can contain one or more request field objects. A request field object is composed the following fields:
 
 - **name**: The string name of the request field object. Required.
-- **value**: The string value of the request field object. Required.
+- **value**: The string value of the request field object. Can contain a single *parameterized value* or be static. Required.
 - **description**: The string description of the request field object. Optional.
 
 ##### Response object
