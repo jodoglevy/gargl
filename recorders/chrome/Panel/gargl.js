@@ -84,7 +84,7 @@
 
 		var tr = document.createElement("tr");
 		tr.setAttribute("class","garglTableEntry");
-		tr.innerHTML = "<td>" + functionNameInputHtml + " id='" + funcNameInputId + "' /></td>";
+		tr.innerHTML = "<td>" + functionNameInputHtml + " id='" + funcNameInputId + "' value='" + (garglItem.functionName || "") + "' /></td>";
 		tr.innerHTML += "<td>" + url + "</td>";
 		tr.innerHTML += "<td>" + method + "</td>";
 		tr.innerHTML += "<td>" + detailsButtonHtml + " id='" + detailsButtonId + "' /></td>";
@@ -114,12 +114,14 @@
 			detailsString += "\n\nFunction Request URL: " + garglRequest.url;
 			detailsString += "\nFunction Request Method: " + garglRequest.method;
 			
-			if(garglRequest.queryString && garglRequest.queryString.length > 0)
+			if(garglRequest.queryString && garglRequest.queryString.length > 0) {
 				detailsString += "\n\nFunction Request Query String:\n" + convertRequestFieldArrayToString(garglRequest.queryString, "\n", ": ");
+			}
 
-			if(garglRequest.postData && garglRequest.postData.params && garglRequest.postData.params.length > 0)
+			if(garglRequest.postData && garglRequest.postData.params && garglRequest.postData.params.length > 0) {
 				detailsString += "\n\nFunction Request Post Data:\n" + convertRequestFieldArrayToString(garglRequest.postData.params, "\n", ": ");
-			
+			}
+
 			alert(detailsString);
 		});
 	}
@@ -264,6 +266,36 @@
 		document.querySelector(garglStartFormSelector).style.display = "none";
 		document.querySelector(garglOpenFormSelector).style.display = "block";
 	}
+
+	function processFile() {
+		var file = document.querySelector(garglOpenSelector).files[0];
+
+		var extensionIndex = file.name.indexOf(".gtf");
+		if(extensionIndex == -1 || extensionIndex != (file.name.length - 4)) {
+			alert("File must be a gargle template file (.gtf)");
+		}
+		else {
+			var reader = new FileReader();
+
+            reader.addEventListener("load", function(event) {
+                var text = event.target.result;
+                var garglModule = JSON.parse(text);
+
+                document.querySelector(garglModuleNameSelector).value = garglModule.moduleName;
+                document.querySelector(garglModuleDescriptionSelector).value = garglModule.moduleDescription;
+
+                garglModule.functions.forEach(function(item) {
+                	shouldRecord = true;
+                	trackRequest(item);
+                	shouldRecord = false;
+				});
+
+                startGargl();
+            });
+
+            reader.readAsText(file);
+        }
+	}
 	
 	window.addEventListener('load', function() {
 		document.querySelector(garglRecordSelector).onclick = toggleRecord;
@@ -271,6 +303,7 @@
 		document.querySelector(garglSaveSelector).onclick = createDownloadLink;
 		document.querySelector(garglNewSelector).onclick = startGargl;
 		document.querySelector(garglExistingSelector).onclick = showOpenForm;
+		document.querySelector(garglOpenSelector).onchange = processFile;
 
 		document.querySelector(garglRecordAreaSelector).style.display = "none";
 		document.querySelector(garglOpenFormSelector).style.display = "none";
