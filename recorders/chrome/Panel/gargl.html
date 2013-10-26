@@ -4,31 +4,41 @@
 		<script src="gargl.js"></script>
 	</head>
 	<body>
-		<form>
-			<input id="garglRecord" type="button" value="Start Recording" />
-			<input id="garglClear" type="button" value="Clear Requests" />
-			<input id="garglSave" type="button" value="Save As Gargl Template File" />
-			<br /><br/>
-			<span id="garglSaveHolder">
+		<form id="startForm">
+			How would you like to start?
+			<br /><br />
+			<input id="garglNew" type="button" value="Start from Scratch" />
+			<input id="garglExisting" type="button" value="Continue from Existing Gargl Template" />
+		</form>
+		<form id="openForm">
+			<input id="garglOpen" type="file" />
+		</form>
+		<span id="recordArea">
+			<form>
+				<input id="garglRecord" type="button" value="Start Recording" />
+				<input id="garglClear" type="button" value="Clear Requests" />
+				<span id="garglSaveHolder">
+					<input id="garglSave" type="button" value="Save As Gargl Template File" />
+				</span>
+				<br /><br/>
 				<label for="garglModuleName">Module Name:</label><input id="garglModuleName" type="text" />
 				<br />
 				<label for="garglModuleDescription">Module Description:</label><input id="garglModuleDescription" type="text" />
-			</span>
-			<br /><br />
-			<label for="garglDomainSearch">Only record requests whose domain contains:</label><input id="garglDomainSearch" type="text" />
-		</form>
-		
-		Requests:
-		<table id="garglTable">
-			<tr>
-				<th>Function Name</th>
-				<th>Function Description</th>
-				<th>URL</th>
-				<th>Method</th>
-				<th>Query String</th>
-				<th>Body</th>
-				<th>Remove</th>
-			</tr>
-		</table>
+				<br /><br />
+				<label for="garglDomainSearch">Only record requests whose domain contains:</label><input id="garglDomainSearch" type="text" />
+			</form>
+			
+			Requests:
+			<table id="garglTable">
+				<tr>
+					<th>Function Name</th>
+					<th>URL</th>
+					<th>Method</th>
+					<th>Details</th>
+					<th>Edit</th>
+					<th>Remove</th>
+				</tr>
+			</table>
+		</span>
 	</body>
 </html>

@@ -40,7 +40,14 @@ Each function object contains a single request object. A request object is compo
 - **httpVersion**: The string http version of the request. Required.
 - **headers**: Any array of *request field objects* to send as request headers. Optional. Request headers should not contain "Cookie," "Content-Type," or "Content-Length" headers. 
 - **queryString**: Any array of *request field objects* to send in the request query string. Optional.
-- **postData**: Any array of *request field objects* to send in the request body. Optional.
+- **postData**: The *request post data object* for this request. Optional.
+
+###### Request Post Data object
+
+Each request object can contain a request post data object. A request post data object is composed the following fields:
+
+- **mimeType**: The string mime type of the request body. Required.
+- **params**: Any array of *request field objects* to send in the request body. Required.
 
 ###### Request Field object
 
