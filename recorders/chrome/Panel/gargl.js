@@ -277,24 +277,22 @@
 		else {
 			var reader = new FileReader();
 
-            reader.addEventListener("load", function(event) {
-                var text = event.target.result;
-                var garglModule = JSON.parse(text);
+			reader.addEventListener("load", function(event) {
+				var text = event.target.result;
+				var garglModule = JSON.parse(text);
 
-                document.querySelector(garglModuleNameSelector).value = garglModule.moduleName;
-                document.querySelector(garglModuleDescriptionSelector).value = garglModule.moduleDescription;
+				document.querySelector(garglModuleNameSelector).value = garglModule.moduleName;
+				document.querySelector(garglModuleDescriptionSelector).value = garglModule.moduleDescription;
 
-                garglModule.functions.forEach(function(item) {
-                	shouldRecord = true;
-                	trackRequest(item);
-                	shouldRecord = false;
-				});
+				shouldRecord = true;
+				garglModule.functions.forEach(function(item) { trackRequest(item); });
+				shouldRecord = false;
+				
+				startGargl();
+			});
 
-                startGargl();
-            });
-
-            reader.readAsText(file);
-        }
+			reader.readAsText(file);
+		}
 	}
 	
 	window.addEventListener('load', function() {
