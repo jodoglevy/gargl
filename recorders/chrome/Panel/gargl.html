@@ -13,6 +13,34 @@
 		<form id="openForm">
 			<input id="garglOpen" type="file" />
 		</form>
+		<form id="editForm">
+			<label for="editFormFunctionName">Function Name: </label><input id="editFormFunctionName" type="text" />
+			<br />
+			<label for="editFormFunctionDescription">Function Description: </label><input id="editFormFunctionDescription" type="text" />
+			<br /><br />
+			<label for="editFormFunctionRequestURL">Function Request URL: </label><input id="editFormFunctionRequestURL" type="text" />
+			<br />
+			You can specify parameterized values by inserting <b>@some-parameter-name@</b> within the URL. This will specify to gargl generators that this gargl function takes a parameter called <b>some-parameter-name</b> that will become a part of the url of the request. The URL can have one or more parameterized values defined.
+			<br />
+			Example: "www.somesite.com/@category@/@topic@/" would create a url with category and topic parameters.
+			<br /><br />
+			<label for="editFormFunctionRequestMethod">Function Request Method: </label><input id="editFormFunctionRequestMethod" type="text" readonly />
+			<br /><br />
+			<span id="editFormFunctionRequestHeaders">
+				Function Request Headers:
+				<br />
+			</span>
+			<span id="editFormFunctionRequestQueryString">
+				Function Request Query String:
+				<br />
+			</span>
+			<span id="editFormFunctionRequestPostData">
+				Function Request Post Data:
+				<br />
+			</span>
+			<input id="garglEditSave" type="button" value="Save" />
+			<input id="garglEditCancel" type="button" value="Cancel" />
+		</form>
 		<span id="recordArea">
 			<form>
 				<input id="garglRecord" type="button" value="Start Recording" />
@@ -21,11 +49,11 @@
 					<input id="garglSave" type="button" value="Save As Gargl Template File" />
 				</span>
 				<br /><br/>
-				<label for="garglModuleName">Module Name:</label><input id="garglModuleName" type="text" />
+				<label for="garglModuleName">Module Name: </label><input id="garglModuleName" type="text" />
 				<br />
-				<label for="garglModuleDescription">Module Description:</label><input id="garglModuleDescription" type="text" />
+				<label for="garglModuleDescription">Module Description: </label><input id="garglModuleDescription" type="text" />
 				<br /><br />
-				<label for="garglDomainSearch">Only record requests whose domain contains:</label><input id="garglDomainSearch" type="text" />
+				<label for="garglDomainSearch">Only record requests whose domain contains: </label><input id="garglDomainSearch" type="text" />
 			</form>
 			
 			Requests:

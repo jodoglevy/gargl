@@ -14,6 +14,7 @@
 	const garglExistingSelector = "#garglExisting";
 	const garglOpenSelector = "#garglOpen";
 	const garglOpenFormSelector = "#openForm";
+	const garglEditFormSelector = "#editForm";
 	const garglStartFormSelector = "#startForm";
 	const garglRecordAreaSelector = "#recordArea";
 	const garglRecordSelector = "#garglRecord";
@@ -25,6 +26,15 @@
 	const garglSaveHolderSelector = "#garglSaveHolder";
 	const garglClearSelector = "#garglClear";
 	const garglSaveSelector = "#garglSave";
+	const garglEditSaveSelector = "#garglEditSave";
+	const garglEditCancelSelector = "#garglEditCancel";
+	const garglEditFormFunctionNameSelector = "#editFormFunctionName";
+	const garglEditFormFunctionDescriptionSelector = "#editFormFunctionDescription";
+	const garglEditFormFunctionRequestURLSelector = "#editFormFunctionRequestURL";
+	const garglEditFormFunctionRequestMethodSelector = "#editFormFunctionRequestMethod";
+	const garglEditFormFunctionRequestHeadersSelector = "#editFormFunctionRequestHeaders";
+	const garglEditFormFunctionRequestQueryStringSelector = "#editFormFunctionRequestQueryString";
+	const garglEditFormFunctionRequestPostDataSelector = "#editFormFunctionRequestPostData";
 
 	const recordingButtonText = {
 		false: "Start Recording",
@@ -95,35 +105,112 @@
 		
 		var removeButton = document.querySelector("#" + removeButtonId);
 		removeButton.addEventListener('click', function() {
-			garglItems[idNumber] = null;
-			
-			var tr = removeButton.parentNode.parentNode;
-			tr.parentNode.removeChild(tr);
+			removeGarglItem(idNumber, removeButton);
+		});
+
+		var editButton = document.querySelector("#" + editButtonId);
+		editButton.addEventListener('click', function() {
+			showEditForm(idNumber);
 		});
 
 		var detailsButton = document.querySelector("#" + detailsButtonId);
 		detailsButton.addEventListener('click', function() {
-			garglItems[idNumber].functionName = getFunctionName(idNumber);
-
-			var garglItem = garglItems[idNumber];
-			var garglRequest = garglItem.request;
-
-			var detailsString = "Function Name: " + garglItem.functionName || "";
-			detailsString += "\nFunction Description: " + garglItem.functionDescription || "";
-
-			detailsString += "\n\nFunction Request URL: " + garglRequest.url;
-			detailsString += "\nFunction Request Method: " + garglRequest.method;
-			
-			if(garglRequest.queryString && garglRequest.queryString.length > 0) {
-				detailsString += "\n\nFunction Request Query String:\n" + convertRequestFieldArrayToString(garglRequest.queryString, "\n", ": ");
-			}
-
-			if(garglRequest.postData && garglRequest.postData.params && garglRequest.postData.params.length > 0) {
-				detailsString += "\n\nFunction Request Post Data:\n" + convertRequestFieldArrayToString(garglRequest.postData.params, "\n", ": ");
-			}
-
-			alert(detailsString);
+			showDetails(idNumber);
 		});
+	}
+
+	function showEditForm(idNumber) {
+		garglItems[idNumber].functionName = getFunctionName(idNumber);
+
+		var garglItem = garglItems[idNumber];
+
+		document.querySelector(garglEditFormFunctionNameSelector).value = garglItem.functionName;
+		document.querySelector(garglEditFormFunctionDescriptionSelector).value = garglItem.functionDescription || "";
+		document.querySelector(garglEditFormFunctionRequestURLSelector).value = garglItem.request.url;
+		document.querySelector(garglEditFormFunctionRequestMethodSelector).value = garglItem.request.method;
+
+		createRequestFieldForm(garglEditFormFunctionRequestHeadersSelector, garglItem.request.headers);
+		createRequestFieldForm(garglEditFormFunctionRequestQueryStringSelector, garglItem.request.queryString);
+		
+		if(garglItem.request.postData) {
+			createRequestFieldForm(garglEditFormFunctionRequestPostDataSelector, garglItem.request.postData.params);
+		}
+		else createRequestFieldForm(garglEditFormFunctionRequestPostDataSelector, null);
+
+		document.querySelector(garglRecordAreaSelector).style.display = "none";
+		document.querySelector(garglStartFormSelector).style.display = "none";
+		document.querySelector(garglOpenFormSelector).style.display = "none";
+		document.querySelector(garglEditFormSelector).style.display = "block";
+	}
+
+	function createRequestFieldForm(formAreaSelector, requestFieldArray) {
+		var formAreaElement = document.querySelector(formAreaSelector);
+
+		if(!requestFieldArray || requestFieldArray.length == 0) formAreaElement.style.display = "none";
+		else {
+			var lastRequestFieldElement = null;
+			formAreaElement.style.display = "block";
+
+			requestFieldArray.forEach(function(requestField) {
+				var requestFieldId = "requestField" + requestField.name;
+
+				var span = document.createElement("span");
+				span.setAttribute("class","garglRequestFieldElement");
+				
+				span.innerHTML = "<br /><label for='" + requestFieldId + "'>" + requestField.name + ": </label>";
+				span.innerHTML += "<input type='text' value='" + requestField.value + "' name='" + requestFieldId + "' id='" + requestFieldId + "' class='garglRequestFieldValue' />";
+				
+				formAreaElement.appendChild(span);
+				lastRequestFieldElement = span;
+			});
+
+			var br1 = document.createElement("br");
+			var br2 = document.createElement("br");
+			lastRequestFieldElement.appendChild(br1);
+			lastRequestFieldElement.appendChild(br2);
+		}
+	}
+
+	function cancelEditGarglItem() {
+		var requestFieldElements = document.querySelectorAll(".garglRequestFieldElement");
+
+		if(requestFieldElements) {
+			for(var i = 0; i < requestFieldElements.length; i ++) {
+				requestFieldElements[i].parentNode.removeChild(requestFieldElements[i]);
+			};
+		}
+
+		startGargl();
+	}
+
+	function removeGarglItem(idNumber, removeButton) {
+		garglItems[idNumber] = null;
+			
+		var tr = removeButton.parentNode.parentNode;
+		tr.parentNode.removeChild(tr);
+	}
+
+	function showDetails(idNumber) {
+		garglItems[idNumber].functionName = getFunctionName(idNumber);
+
+		var garglItem = garglItems[idNumber];
+		var garglRequest = garglItem.request;
+
+		var detailsString = "Function Name: " + garglItem.functionName || "";
+		detailsString += "\nFunction Description: " + garglItem.functionDescription || "";
+
+		detailsString += "\n\nFunction Request URL: " + garglRequest.url;
+		detailsString += "\nFunction Request Method: " + garglRequest.method;
+		
+		if(garglRequest.queryString && garglRequest.queryString.length > 0) {
+			detailsString += "\n\nFunction Request Query String:\n" + convertRequestFieldArrayToString(garglRequest.queryString, "\n", ": ");
+		}
+
+		if(garglRequest.postData && garglRequest.postData.params && garglRequest.postData.params.length > 0) {
+			detailsString += "\n\nFunction Request Post Data:\n" + convertRequestFieldArrayToString(garglRequest.postData.params, "\n", ": ");
+		}
+
+		alert(detailsString);
 	}
 
 	function getFunctionName(id) {
@@ -134,7 +221,7 @@
 		var urlWithoutQueryString = removeQueryStringFromUrl(request.request.url);
 		var domain = getDomainOfUrl(urlWithoutQueryString);
 		
-		if(shouldRecord && !urlWithoutQueryString.match(/.gif$|.jpeg$|.jpg$|.png$|.js$|.css$/)) {
+		if(shouldRecord && !urlWithoutQueryString.match(/.gif$|.jpeg$|.jpg$|.png$|.js$|.css$|.swf$/)) {
 			var domainMustContain = document.querySelector(garglDomainSearchSelector).value;
 			if(domainMustContain.length > 0 && domain.indexOf(domainMustContain) === -1) return;
 			
@@ -231,6 +318,7 @@
 			if(item.request.queryString) {
 				item.request.queryString.forEach(function(queryArg) {
 					queryArg.description = "";
+					queryArg.name = decodeURIComponent(queryArg.name);
 					queryArg.value = decodeURIComponent(queryArg.value);
 				});
 			}
@@ -238,6 +326,7 @@
 			if(item.request.postData && item.request.postData.params) {
 				item.request.postData.params.forEach(function(postArg) {
 					postArg.description = "";
+					postArg.name = decodeURIComponent(postArg.name);
 					postArg.value = decodeURIComponent(postArg.value);
 				});
 			}
@@ -259,12 +348,14 @@
 		document.querySelector(garglRecordAreaSelector).style.display = "block";
 		document.querySelector(garglStartFormSelector).style.display = "none";
 		document.querySelector(garglOpenFormSelector).style.display = "none";
+		document.querySelector(garglEditFormSelector).style.display = "none";
 	}
 
 	function showOpenForm() {
 		document.querySelector(garglRecordAreaSelector).style.display = "none";
 		document.querySelector(garglStartFormSelector).style.display = "none";
 		document.querySelector(garglOpenFormSelector).style.display = "block";
+		document.querySelector(garglEditFormSelector).style.display = "none";
 	}
 
 	function processFile() {
@@ -301,10 +392,14 @@
 		document.querySelector(garglSaveSelector).onclick = createDownloadLink;
 		document.querySelector(garglNewSelector).onclick = startGargl;
 		document.querySelector(garglExistingSelector).onclick = showOpenForm;
+		document.querySelector(garglEditSaveSelector).onclick = cancelEditGarglItem;
+		document.querySelector(garglEditCancelSelector).onclick = cancelEditGarglItem;
+
 		document.querySelector(garglOpenSelector).onchange = processFile;
 
 		document.querySelector(garglRecordAreaSelector).style.display = "none";
 		document.querySelector(garglOpenFormSelector).style.display = "none";
+		document.querySelector(garglEditFormSelector).style.display = "none";
 	});
 	
 	chrome.devtools.network.onRequestFinished.addListener(trackRequest);

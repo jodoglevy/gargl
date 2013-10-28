@@ -6,3 +6,7 @@ tr,th,td{
 	text-align: left;
 	border: 1px solid black;
 }
+
+#editFormFunctionRequestURL, #editFormFunctionDescription, #garglModuleDescription, .garglRequestFieldValue {
+	width:600;
+}
