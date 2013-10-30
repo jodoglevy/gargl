@@ -7,6 +7,6 @@ tr,th,td{
 	border: 1px solid black;
 }
 
-#editFormFunctionRequestURL, #editFormFunctionDescription, #garglModuleDescription, .garglRequestFieldValue {
+#editFormFunctionRequestURL, #editFormFunctionDescription, #garglModuleDescription, #editFormFunctionRequestPostDataMimeType, .garglRequestFieldValue {
 	width:600;
 }

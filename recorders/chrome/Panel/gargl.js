@@ -3,6 +3,7 @@
 	var garglItems = [];
 	var nextId = 0;
 	
+	const maxUrlLength = 90;
 	const garglSchemaVersion = "1.0";
 
 	const removeButtonHtml = "<input type='button' value='Remove'";
@@ -35,6 +36,8 @@
 	const garglEditFormFunctionRequestHeadersSelector = "#editFormFunctionRequestHeaders";
 	const garglEditFormFunctionRequestQueryStringSelector = "#editFormFunctionRequestQueryString";
 	const garglEditFormFunctionRequestPostDataSelector = "#editFormFunctionRequestPostData";
+	const garglEditFormFunctionRequestPostDataMimeTypeSelector = "#editFormFunctionRequestPostDataMimeType";
+	const garglEditFormFunctionIdNumberSelector = "#garglFunctionIdNumber";
 
 	const recordingButtonText = {
 		false: "Start Recording",
@@ -85,18 +88,21 @@
 		var removeButtonId = "removeButton" + idNumber;
 		var editButtonId = "editButton" + idNumber;
 		var detailsButtonId = "detailsButton" + idNumber;
+
 		var funcNameInputId = "funcNameInput" + idNumber;
-		
+		var funcUrlId = "funcUrlId" + idNumber;
+		var funcMethodId = "funcMethodId" + idNumber;
+
 		var url = garglItem.request.url;
 		var method = garglItem.request.method;
 
-		if(url.length > 90) url = url.substr(0,90) + "..."
+		if(url.length > maxUrlLength) url = url.substr(0,maxUrlLength) + "..."
 
 		var tr = document.createElement("tr");
 		tr.setAttribute("class","garglTableEntry");
 		tr.innerHTML = "<td>" + functionNameInputHtml + " id='" + funcNameInputId + "' value='" + (garglItem.functionName || "") + "' /></td>";
-		tr.innerHTML += "<td>" + url + "</td>";
-		tr.innerHTML += "<td>" + method + "</td>";
+		tr.innerHTML += "<td id='" + funcUrlId + "'>" + url + "</td>";
+		tr.innerHTML += "<td id='" + funcMethodId + "'>" + method + "</td>";
 		tr.innerHTML += "<td>" + detailsButtonHtml + " id='" + detailsButtonId + "' /></td>";
 		tr.innerHTML += "<td>" + editButtonHtml + " id='" + editButtonId + "' /></td>";
 		tr.innerHTML += "<td>" + removeButtonHtml + " id='" + removeButtonId + "' /></td>";
@@ -119,11 +125,24 @@
 		});
 	}
 
+	function updateRowInGarglItemsTable(idNumber, garglItem) {
+		var funcNameInputId = "funcNameInput" + idNumber;
+		var funcUrlId = "funcUrlId" + idNumber;
+		var funcMethodId = "funcMethodId" + idNumber;
+
+		var url = garglItem.request.url;
+		if(url.length > maxUrlLength) url = url.substr(0,maxUrlLength) + "..."
+		
+		document.querySelector("#"+funcNameInputId).value = garglItem.functionName;
+		document.querySelector("#"+funcUrlId).innerHTML = url;
+		document.querySelector("#"+funcMethodId).innerHTML = garglItem.request.method;		
+	}
+
 	function showEditForm(idNumber) {
-		garglItems[idNumber].functionName = getFunctionName(idNumber);
-
 		var garglItem = garglItems[idNumber];
+		garglItem.functionName = getFunctionName(idNumber);
 
+		document.querySelector(garglEditFormFunctionIdNumberSelector).value = idNumber;
 		document.querySelector(garglEditFormFunctionNameSelector).value = garglItem.functionName;
 		document.querySelector(garglEditFormFunctionDescriptionSelector).value = garglItem.functionDescription || "";
 		document.querySelector(garglEditFormFunctionRequestURLSelector).value = garglItem.request.url;
@@ -133,6 +152,7 @@
 		createRequestFieldForm(garglEditFormFunctionRequestQueryStringSelector, garglItem.request.queryString);
 		
 		if(garglItem.request.postData) {
+			document.querySelector(garglEditFormFunctionRequestPostDataMimeTypeSelector).value = garglItem.request.postData.mimeType;
 			createRequestFieldForm(garglEditFormFunctionRequestPostDataSelector, garglItem.request.postData.params);
 		}
 		else createRequestFieldForm(garglEditFormFunctionRequestPostDataSelector, null);
@@ -158,7 +178,7 @@
 				span.setAttribute("class","garglRequestFieldElement");
 				
 				span.innerHTML = "<br /><label for='" + requestFieldId + "'>" + requestField.name + ": </label>";
-				span.innerHTML += "<input type='text' value='" + requestField.value + "' name='" + requestFieldId + "' id='" + requestFieldId + "' class='garglRequestFieldValue' />";
+				span.innerHTML += "<input type='text' value='" + requestField.value + "' id='" + requestFieldId + "' class='garglRequestFieldValue' />";
 				
 				formAreaElement.appendChild(span);
 				lastRequestFieldElement = span;
@@ -183,6 +203,28 @@
 		startGargl();
 	}
 
+	function saveEditGarglItem() {
+		var idNumber = document.querySelector(garglEditFormFunctionIdNumberSelector).value;
+
+		var garglItem = garglItems[idNumber];
+
+		garglItem.functionName = document.querySelector(garglEditFormFunctionNameSelector).value;
+		garglItem.functionDescription =  document.querySelector(garglEditFormFunctionDescriptionSelector).value;
+		garglItem.request.url = document.querySelector(garglEditFormFunctionRequestURLSelector).value;
+		garglItem.request.method =  document.querySelector(garglEditFormFunctionRequestMethodSelector).value;
+
+		//garglItem.request.headers = grabRequestFieldFormData(garglEditFormFunctionRequestHeadersSelector);
+		//garglItem.request.queryString = grabRequestFieldFormData(garglEditFormFunctionRequestQueryStringSelector);
+		
+		if(garglItem.request.postData) {
+			garglItem.request.postData.mimeType = document.querySelector(garglEditFormFunctionRequestPostDataMimeTypeSelector).value;
+		//	garglItem.request.postData.params = grabRequestFieldFormData(garglEditFormFunctionRequestPostDataSelector);
+		}
+
+		updateRowInGarglItemsTable(idNumber, garglItem);
+		cancelEditGarglItem();
+	}
+
 	function removeGarglItem(idNumber, removeButton) {
 		garglItems[idNumber] = null;
 			
@@ -191,10 +233,10 @@
 	}
 
 	function showDetails(idNumber) {
-		garglItems[idNumber].functionName = getFunctionName(idNumber);
-
 		var garglItem = garglItems[idNumber];
-		var garglRequest = garglItem.request;
+		var garglRequest = garglItem.request
+
+		garglItem.functionName = getFunctionName(idNumber);
 
 		var detailsString = "Function Name: " + garglItem.functionName || "";
 		detailsString += "\nFunction Description: " + garglItem.functionDescription || "";
@@ -392,7 +434,7 @@
 		document.querySelector(garglSaveSelector).onclick = createDownloadLink;
 		document.querySelector(garglNewSelector).onclick = startGargl;
 		document.querySelector(garglExistingSelector).onclick = showOpenForm;
-		document.querySelector(garglEditSaveSelector).onclick = cancelEditGarglItem;
+		document.querySelector(garglEditSaveSelector).onclick = saveEditGarglItem;
 		document.querySelector(garglEditCancelSelector).onclick = cancelEditGarglItem;
 
 		document.querySelector(garglOpenSelector).onchange = processFile;
