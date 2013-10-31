@@ -191,6 +191,28 @@
 		}
 	}
 
+	function grabRequestFieldFormData(formAreaSelector) {
+		var fieldData = [];
+		var formAreaElement = document.querySelector(formAreaSelector);
+
+		if(formAreaElement.style.display != "none") { 
+
+			var fieldElements = formAreaElement.querySelectorAll(".garglRequestFieldElement");
+
+			for(var i = 0; i < fieldElements.length; i ++) {
+				var field = {
+					description: "",
+					name: fieldElements[i].querySelector("label").innerHTML.replace(": ",""),
+					value: fieldElements[i].querySelector("input").value,
+				};
+
+				fieldData.push(field);
+			}
+		}
+
+		return fieldData;
+	}
+
 	function cancelEditGarglItem() {
 		var requestFieldElements = document.querySelectorAll(".garglRequestFieldElement");
 
@@ -213,12 +235,12 @@
 		garglItem.request.url = document.querySelector(garglEditFormFunctionRequestURLSelector).value;
 		garglItem.request.method =  document.querySelector(garglEditFormFunctionRequestMethodSelector).value;
 
-		//garglItem.request.headers = grabRequestFieldFormData(garglEditFormFunctionRequestHeadersSelector);
-		//garglItem.request.queryString = grabRequestFieldFormData(garglEditFormFunctionRequestQueryStringSelector);
+		garglItem.request.headers = grabRequestFieldFormData(garglEditFormFunctionRequestHeadersSelector);
+		garglItem.request.queryString = grabRequestFieldFormData(garglEditFormFunctionRequestQueryStringSelector);
 		
 		if(garglItem.request.postData) {
 			garglItem.request.postData.mimeType = document.querySelector(garglEditFormFunctionRequestPostDataMimeTypeSelector).value;
-		//	garglItem.request.postData.params = grabRequestFieldFormData(garglEditFormFunctionRequestPostDataSelector);
+			garglItem.request.postData.params = grabRequestFieldFormData(garglEditFormFunctionRequestPostDataSelector);
 		}
 
 		updateRowInGarglItemsTable(idNumber, garglItem);
