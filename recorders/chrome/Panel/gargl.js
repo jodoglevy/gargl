@@ -10,6 +10,9 @@
 	const editButtonHtml = "<input type='button' value='Edit'";
 	const detailsButtonHtml = "<input type='button' value='Details'";
 	const functionNameInputHtml = "<input type='text' name='funcName'";
+
+	const garglRequestFieldElementClass = "garglRequestFieldElement";
+	const garglResponseFieldElementClass = "garglResponseFieldElement";
 	
 	const garglNewSelector = "#garglNew";
 	const garglExistingSelector = "#garglExisting";
@@ -38,6 +41,8 @@
 	const garglEditFormFunctionRequestPostDataSelector = "#editFormFunctionRequestPostData";
 	const garglEditFormFunctionRequestPostDataMimeTypeSelector = "#editFormFunctionRequestPostDataMimeType";
 	const garglEditFormFunctionIdNumberSelector = "#garglFunctionIdNumber";
+	const garglNewResponseFieldSelector = "#garglNewResponseField";
+	const editFormFunctionResponseFieldsSelector = "#editFormFunctionResponseFields";
 
 	const recordingButtonText = {
 		false: "Start Recording",
@@ -157,6 +162,12 @@
 		}
 		else createRequestFieldForm(garglEditFormFunctionRequestPostDataSelector, null);
 
+		if(garglItem.response.fields) {
+			garglItem.response.fields.forEach(function(field) {
+				addResponseField(null, field.name, field.cssSelector);
+			})
+		};
+
 		document.querySelector(garglRecordAreaSelector).style.display = "none";
 		document.querySelector(garglStartFormSelector).style.display = "none";
 		document.querySelector(garglOpenFormSelector).style.display = "none";
@@ -175,7 +186,7 @@
 				var requestFieldId = "requestField" + requestField.name;
 
 				var span = document.createElement("span");
-				span.setAttribute("class","garglRequestFieldElement");
+				span.setAttribute("class", garglRequestFieldElementClass);
 				
 				span.innerHTML = "<br /><label for='" + requestFieldId + "'>" + requestField.name + ": </label>";
 				span.innerHTML += "<input type='text' value='" + requestField.value + "' id='" + requestFieldId + "' class='garglRequestFieldValue' />";
@@ -197,7 +208,7 @@
 
 		if(formAreaElement.style.display != "none") { 
 
-			var fieldElements = formAreaElement.querySelectorAll(".garglRequestFieldElement");
+			var fieldElements = formAreaElement.querySelectorAll("." + garglRequestFieldElementClass);
 
 			for(var i = 0; i < fieldElements.length; i ++) {
 				var field = {
@@ -214,11 +225,18 @@
 	}
 
 	function cancelEditGarglItem() {
-		var requestFieldElements = document.querySelectorAll(".garglRequestFieldElement");
+		var requestFieldElements = document.querySelectorAll("." + garglRequestFieldElementClass);
+		var responseFieldElements = document.querySelectorAll("." + garglResponseFieldElementClass);
 
 		if(requestFieldElements) {
 			for(var i = 0; i < requestFieldElements.length; i ++) {
 				requestFieldElements[i].parentNode.removeChild(requestFieldElements[i]);
+			};
+		}
+
+		if(responseFieldElements) {
+			for(var i = 0; i < responseFieldElements.length; i ++) {
+				responseFieldElements[i].parentNode.removeChild(responseFieldElements[i]);
 			};
 		}
 
@@ -242,6 +260,8 @@
 			garglItem.request.postData.mimeType = document.querySelector(garglEditFormFunctionRequestPostDataMimeTypeSelector).value;
 			garglItem.request.postData.params = grabRequestFieldFormData(garglEditFormFunctionRequestPostDataSelector);
 		}
+
+		garglItem.response.fields = grabResponseFieldFormData();
 
 		updateRowInGarglItemsTable(idNumber, garglItem);
 		cancelEditGarglItem();
@@ -449,6 +469,84 @@
 			reader.readAsText(file);
 		}
 	}
+
+	function addResponseField(clickEvent, responseName, responseSelector) {
+		responseName = responseName || "";
+		responseSelector = responseSelector || "";
+
+		var responseFieldsArea = document.querySelector(editFormFunctionResponseFieldsSelector);
+		
+		var nextResponseId = responseFieldsArea.querySelectorAll("."+garglResponseFieldElementClass).length;
+		var fieldNameId = "editFormFunctionResponseFieldName" + nextResponseId;
+		var fieldSelectorId = "editFormFunctionResponseFieldSelector" + nextResponseId;
+		var fieldSelectorTestId = "editFormFunctionResponseFieldTest" + nextResponseId;
+
+		var span = document.createElement("span");
+		span.setAttribute("class", garglResponseFieldElementClass);
+				
+		span.innerHTML = '<label for="' + fieldNameId + '">Response Field Name: </label>';
+		span.innerHTML += '<input id="' + fieldNameId + '" type="text" value="' + responseName + '"/>';
+		span.innerHTML += '<br />';
+		span.innerHTML += '<label for="' + fieldSelectorId + '">CSS Selector: </label>';
+		span.innerHTML += '<input id="' + fieldSelectorId + '" type="text" value="' + responseSelector + '" />';
+		span.innerHTML += '<input id="' + fieldSelectorTestId + '" type="button" value="Test Selector" />'
+		span.innerHTML += '<br /><br />';
+
+		responseFieldsArea.appendChild(span);
+
+		document.querySelector("#"+fieldSelectorTestId).onclick = function() {
+			var idNumber = document.querySelector(garglEditFormFunctionIdNumberSelector).value;
+			var selectorString = document.querySelector("#"+fieldSelectorId).value;
+
+			var garglItem = garglItems[idNumber];
+			
+			if(garglItem.getContent) {
+				garglItem.getContent(function(content, encoding) {
+					try {
+						content = content.replace(/\n|\t/g,"")
+						
+						var responseAsDocument = document.implementation.createHTMLDocument();
+						responseAsDocument.innerHTML = content;
+						
+						var matches = responseAsDocument.querySelectorAll(selectorString);
+
+						var matchString = "Inner HTML of matching elements:\n\n"
+						for(var i = 0; i < matches.length; i ++) {
+							matchString += (matches[i].innerHTML + "\n")
+						}
+
+						alert(matchString);
+					}
+					catch(e) {
+						alert(e);
+					}
+				});
+			}
+			else {
+				alert("This gargl function was loaded from a file and so the response body is not available to test against.");
+			}
+		};
+
+		document.querySelector("#"+fieldNameId).focus();
+	}
+
+	function grabResponseFieldFormData() {
+		var fieldData = [];
+		var fieldElements = document.querySelectorAll("." + garglResponseFieldElementClass);
+
+		for(var i = 0; i < fieldElements.length; i ++) {
+			var fieldInputs = fieldElements[i].querySelectorAll("input");
+
+			var field = {
+				name: fieldInputs[0].value,
+				cssSelector: fieldInputs[1].value
+			};
+
+			if(field.name.length > 0 && field.cssSelector.length > 0) fieldData.push(field);
+		}
+
+		return fieldData;
+	}
 	
 	window.addEventListener('load', function() {
 		document.querySelector(garglRecordSelector).onclick = toggleRecord;
@@ -458,6 +556,7 @@
 		document.querySelector(garglExistingSelector).onclick = showOpenForm;
 		document.querySelector(garglEditSaveSelector).onclick = saveEditGarglItem;
 		document.querySelector(garglEditCancelSelector).onclick = cancelEditGarglItem;
+		document.querySelector(garglNewResponseFieldSelector).onclick = addResponseField;
 
 		document.querySelector(garglOpenSelector).onchange = processFile;
 
