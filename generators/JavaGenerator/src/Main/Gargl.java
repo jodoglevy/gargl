@@ -1,7 +1,7 @@
 package Main;
 
-import Generators.Generator;
-import Generators.JavaClassGenerator;
+import Generators.*;
+import Main.InputParser;
 import TypeDefinitions.GarglModule;
 import Utilities.JCommanderParser;
 
@@ -42,7 +42,10 @@ public class Gargl {
 		System.out.println("LOG: Parsed requests " + jct.inputFilename);
 
 		// Create the necessary generator based on language selected and initialize it with the Module created from file
-		Generator generator = new JavaClassGenerator(mod);
+		Generator generator = null;
+		if(jct.language.toLowerCase() == "java") generator = new JavaClassGenerator(mod);
+		else if (jct.language.toLowerCase() == "javascript-win8") generator = new Windows8JavascriptModuleGenerator(mod); 
+
 		generator.generateClass(jct.outputDirectory);
 	}
 }
