@@ -6,7 +6,7 @@ This is a Gargl generator implemented in Java.
 
 ### Use
 
-The Java Gargl Generator comes as a runnable jar. To run the Java Gargl Generator
+The Java Gargl Generator comes as a runnable jar. To run the Java Gargl Generator from the command line:
 
 	java -jar bld\JavaGarglGenerator.jar -o some\output\location -i someGarglFile.gtf -lang someLanguage 
 
