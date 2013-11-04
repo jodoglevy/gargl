@@ -43,11 +43,15 @@
 	const garglEditFormFunctionIdNumberSelector = "#garglFunctionIdNumber";
 	const garglNewResponseFieldSelector = "#garglNewResponseField";
 	const editFormFunctionResponseFieldsSelector = "#editFormFunctionResponseFields";
+	const garglViewResponseSelector = "#garglViewResponse";
+	const garglViewResponseHolderSelector = "#garglViewResponseHolder";
 
 	const recordingButtonText = {
 		false: "Start Recording",
 		true: "Stop Recording"
 	};
+
+	const garglFileGetResponseError = "This gargl function was loaded from a file and so the response body is not available.";
 
 
 	function toggleRecord() {
@@ -505,17 +509,21 @@
 					try {
 						content = content.replace(/\n|\t/g,"")
 						
-						var responseAsDocument = document.implementation.createHTMLDocument();
-						responseAsDocument.innerHTML = content;
-						
-						var matches = responseAsDocument.querySelectorAll(selectorString);
+						var holder = document.createElement("span");
+						holder.innerHTML = content;
 
-						var matchString = "Inner HTML of matching elements:\n\n"
-						for(var i = 0; i < matches.length; i ++) {
-							matchString += (matches[i].innerHTML + "\n")
+						var matches = holder.querySelectorAll(selectorString);
+
+						if(matches.length > 0) {
+							var matchString = "Inner HTML of matching elements:\n\n"
+							
+							for(var i = 0; i < matches.length; i ++) {
+								matchString += (matches[i].innerHTML + "\n\n")
+							}
+
+							alert(matchString);
 						}
-
-						alert(matchString);
+						else alert("No matching elements found");
 					}
 					catch(e) {
 						alert(e);
@@ -523,11 +531,45 @@
 				});
 			}
 			else {
-				alert("This gargl function was loaded from a file and so the response body is not available to test against.");
+				alert(garglFileGetResponseError);
 			}
 		};
 
 		document.querySelector("#"+fieldNameId).focus();
+	}
+
+	function viewResponse() {
+		var idNumber = document.querySelector(garglEditFormFunctionIdNumberSelector).value;
+		var garglItem = garglItems[idNumber];
+			
+		if(garglItem.getContent) {
+			garglItem.getContent(function(content, encoding) {
+				window.URL = window.webkitURL || window.URL;
+
+				var prevLink = document.querySelector('a');
+				if (prevLink) window.URL.revokeObjectURL(prevLink.href);
+
+				var fileContents = content;
+				var bb = new Blob([fileContents], {type: 'text/plain'});
+
+				var a = prevLink || document.createElement('a');
+				a.download = "response.txt";
+				a.href = window.URL.createObjectURL(bb);
+				a.textContent = 'Click to download';
+
+				a.dataset.downloadurl = ['text/plain', a.download, a.href].join(':');
+
+				document.querySelector(garglViewResponseHolderSelector).appendChild(a);
+				
+				a.onclick = function(e) {
+					if ('disabled' in this.dataset) return false;
+					cleanUpDownloadLink(this);
+				};
+			});
+		}
+		else {
+			alert(garglFileGetResponseError);
+		}					
 	}
 
 	function grabResponseFieldFormData() {
@@ -557,6 +599,7 @@
 		document.querySelector(garglEditSaveSelector).onclick = saveEditGarglItem;
 		document.querySelector(garglEditCancelSelector).onclick = cancelEditGarglItem;
 		document.querySelector(garglNewResponseFieldSelector).onclick = addResponseField;
+		document.querySelector(garglViewResponseSelector).onclick = viewResponse;
 
 		document.querySelector(garglOpenSelector).onchange = processFile;
 
