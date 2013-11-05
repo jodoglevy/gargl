@@ -34,6 +34,9 @@ public class Gargl {
 			// default to current working directory
 			jct.outputDirectory = "";
 		}
+		else if(jct.outputDirectory.charAt(jct.outputDirectory.length() - 1) != '\\') {
+			jct.outputDirectory = jct.outputDirectory + "\\";
+		}
 
 		// Read in file and convert to Module containing function name and Requests
 		InputParser parser = new InputParser(jct.inputFilename);
@@ -43,8 +46,8 @@ public class Gargl {
 
 		// Create the necessary generator based on language selected and initialize it with the Module created from file
 		Generator generator = null;
-		if(jct.language.toLowerCase() == "java") generator = new JavaClassGenerator(mod);
-		else if (jct.language.toLowerCase() == "javascript-win8") generator = new Windows8JavascriptModuleGenerator(mod); 
+		if(jct.language.equalsIgnoreCase("java")) generator = new JavaClassGenerator(mod);
+		else if (jct.language.equalsIgnoreCase("javascript-win8")) generator = new Windows8JavascriptModuleGenerator(mod); 
 
 		generator.generateClass(jct.outputDirectory);
 	}

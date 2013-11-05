@@ -10,23 +10,38 @@ import Utilities.Parameter;
 
 public class Windows8JavascriptModuleGenerator extends Generator {
 
-	private static String JAVASCRIPT_MODULE_FORMAT = "(function () {\n" +
-			"\"use strict\";\n" +
-			"%1$s \n" +
-			"})();";
+	private static String JAVASCRIPT_MODULE_FORMAT = "(function () {\n\t" +
+		"\"use strict\";" +
+		"%1$s \n" +
+		"})();";
 	
-	private static String JAVASCRIPT_NAMESPACE_FUNCTION_FORMAT = "%1$ : %1$s ,";
+	private static String JAVASCRIPT_NAMESPACE_FUNCTION_FORMAT = "\n\t\t%1$s: %1$s,";
 	
-	private static String JAVASCRIPT_NAMESPACE_FORMAT = "WinJS.Namespace.define('%1$s', {\n" + 
-			"%2$s \n" +
-			"});";
+	private static String JAVASCRIPT_NAMESPACE_FORMAT = "\n\tWinJS.Namespace.define('%1$s', {" + 
+		"%2$s\n\t" +
+		"});\n";
+	
+	private static String JAVASCRIPT_FUNCTION_FORMAT = "\n\n\tfunction %1$s %2$s {" + 
+		"};\n";
 	
 	public Windows8JavascriptModuleGenerator(GarglModule module){
 		super(module);
 	}
 	
 	public String generateFunction(Function function) {
-		return "";
+		StringBuilder parametersSB = new StringBuilder("(");
+		
+		int i = 0;
+		for(Parameter parameter : function.getParameters()) {
+			parametersSB.append(parameter.getParameterName());
+			
+			if(i < function.getParameters().size() - 1) parametersSB.append(", ");
+			i ++;
+		}
+		
+		parametersSB.append(")");
+		
+		return String.format(JAVASCRIPT_FUNCTION_FORMAT, function.getFunctionName(), parametersSB.toString());
 	}
 
 	@Override
