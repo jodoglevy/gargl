@@ -63,9 +63,8 @@ public class Function {
 	}
 
 	private void setPostData(JsonElement jsonPostData) {
-		JsonElement paramsElement = JsonUtils.findElement(jsonPostData, "params");
 		JsonArray array_postDataParams = null;
-		if(paramsElement != null) array_postDataParams = JsonUtils.asJsonArray(paramsElement);
+		if(jsonPostData != null) array_postDataParams = JsonUtils.asJsonArray(jsonPostData);
 		
 		if (array_postDataParams != null) {
 			for (JsonElement postParam : array_postDataParams) {
