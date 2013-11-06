@@ -10,6 +10,13 @@ import Utilities.Parameter;
 
 public class Windows8JavascriptModuleGenerator extends Generator {
 
+	private static final String JAVASCRIPT_REQUEST_STRING_CONCAT_FORMAT = " + \"%1$s\" + \"=\" + encodeURIComponent(%2$s) + \"&\"";
+	
+	private static String JAVASCRIPT_STRING_VARIABLE_DECLARATION_FORMAT = "\t\tvar %1$s = '%2$s';\n\n";
+	private static String JAVASCRIPT_CODE_VARIABLE_DECLARATION_FORMAT = "\t\tvar %1$s = %2$s;\n\n";
+
+	private static String JAVASCRIPT_KEYVALUE_FORMAT = "\t\t\t\"%1$s\": %2$s,\n";
+	
 	private static String JAVASCRIPT_MODULE_FORMAT = "(function () {\n\t" +
 		"\"use strict\";" +
 		"%1$s \n" +
@@ -21,8 +28,23 @@ public class Windows8JavascriptModuleGenerator extends Generator {
 		"%2$s\n\t" +
 		"});\n";
 	
-	private static String JAVASCRIPT_FUNCTION_FORMAT = "\n\n\tfunction %1$s %2$s {" + 
-		"};\n";
+	private static String JAVASCRIPT_FUNCTION_FORMAT = "\n\n\tfunction %1$s %2$s {\n%3$s" + 
+		"\n\t};\n";
+	
+	private static String JAVASCRIPT_XHR_FORMAT = "\t\tWinJS.xhr({\n" + 
+        "\t\t\ttype: type,\n" +
+        "\t\t\turl: url,\n" +
+        "\t\t\theaders: headers,\n" +
+        "\t\t\tdata: data,\n" +
+        "\t\t})\n" + 
+        "\t\t.then(\n" +
+            "\t\t\tfunction (response) {\n" + 
+                "\t\t\t\tcallback(null, response);\n" +
+           "\t\t\t},\n" + 
+           "\t\t\tfunction (err) {\n" + 
+               "\t\t\t\treturn callback(err);\n" + 
+           "\t\t\t}\n" +
+        "\t\t);";
 	
 	public Windows8JavascriptModuleGenerator(GarglModule module){
 		super(module);
@@ -30,18 +52,50 @@ public class Windows8JavascriptModuleGenerator extends Generator {
 	
 	public String generateFunction(Function function) {
 		StringBuilder parametersSB = new StringBuilder("(");
-		
-		int i = 0;
 		for(Parameter parameter : function.getParameters()) {
 			parametersSB.append(parameter.getParameterName());
-			
-			if(i < function.getParameters().size() - 1) parametersSB.append(", ");
-			i ++;
+			parametersSB.append(", ");
 		}
+		parametersSB.append("callback)");
 		
-		parametersSB.append(")");
+		StringBuilder functionBodySB = new StringBuilder("");
+		functionBodySB.append(String.format(JAVASCRIPT_STRING_VARIABLE_DECLARATION_FORMAT, "type", function.getMethod()));
 		
-		return String.format(JAVASCRIPT_FUNCTION_FORMAT, function.getFunctionName(), parametersSB.toString());
+		Map<String,String> headers = function.getHeaders();
+		StringBuilder headersStringSB = new StringBuilder("{\n");
+		for(String headerKey : headers.keySet()) {
+			headersStringSB.append(String.format(JAVASCRIPT_KEYVALUE_FORMAT, headerKey, Parameter.processParameter(headers.get(headerKey).replace("\"","\\\""), function)));
+		}
+		headersStringSB.append("\t\t}");
+		functionBodySB.append(String.format(JAVASCRIPT_CODE_VARIABLE_DECLARATION_FORMAT, "headers", headersStringSB.toString()));
+		
+		Map<String,String> queryString = function.getQueryString();
+		StringBuilder queryStringSB = new StringBuilder("\"?\"");
+		for(String queryStringKey : queryString.keySet()) {
+			queryStringSB.append(String.format(JAVASCRIPT_REQUEST_STRING_CONCAT_FORMAT, queryStringKey, Parameter.processParameter(queryString.get(queryStringKey).replace("\"","\\\""), function)));
+		}
+		functionBodySB.append(String.format(JAVASCRIPT_CODE_VARIABLE_DECLARATION_FORMAT, "queryString", queryStringSB.toString()));
+		
+		Map<String,String> postData = function.getPostData();
+		StringBuilder postDataSB = new StringBuilder("\"\"");
+		for(String postDataKey : postData.keySet()) {
+			postDataSB.append(String.format(JAVASCRIPT_REQUEST_STRING_CONCAT_FORMAT, postDataKey, Parameter.processParameter(postData.get(postDataKey).replace("\"","\\\""), function)));
+		}
+		functionBodySB.append(String.format(JAVASCRIPT_CODE_VARIABLE_DECLARATION_FORMAT, "data", postDataSB.toString()));
+		
+		List<String> urlParts = Parameter.processURLParameters(function.getUrl(), function);
+		StringBuilder urlStringSB = new StringBuilder();
+		for(String urlPart : urlParts) {
+			urlStringSB.append(urlPart);
+			urlStringSB.append(" + ");
+		}
+		urlStringSB.append("queryString");
+		functionBodySB.append(String.format(JAVASCRIPT_CODE_VARIABLE_DECLARATION_FORMAT, "url", urlStringSB.toString()));
+		
+		
+		functionBodySB.append(JAVASCRIPT_XHR_FORMAT);
+		
+		return String.format(JAVASCRIPT_FUNCTION_FORMAT, function.getFunctionName(), parametersSB.toString(), functionBodySB.toString());
 	}
 
 	@Override

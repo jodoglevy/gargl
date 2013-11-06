@@ -35,9 +35,7 @@ public class Function {
 		this.setHeaders(JsonUtils.findElement(jsonRequest, "headers"));
 		this.setUrl(JsonUtils.findElement(jsonRequest, "url"));
 		this.setQueryString(JsonUtils.findElement(jsonRequest, "queryString"));
-		if ("POST".equals(this.method)) {
-			this.setPostData(JsonUtils.findElement(jsonRequest, "postData"));
-		}
+		this.setPostData(JsonUtils.findElement(jsonRequest, "postData"));
 	}
 
 	private void setFunctionName(JsonObject jsonRequest) {
@@ -66,7 +64,9 @@ public class Function {
 
 	private void setPostData(JsonElement jsonPostData) {
 		JsonElement paramsElement = JsonUtils.findElement(jsonPostData, "params");
-		JsonArray array_postDataParams = JsonUtils.asJsonArray(paramsElement);
+		JsonArray array_postDataParams = null;
+		if(paramsElement != null) array_postDataParams = JsonUtils.asJsonArray(paramsElement);
+		
 		if (array_postDataParams != null) {
 			for (JsonElement postParam : array_postDataParams) {
 				JsonObject param = JsonUtils.asJsonObject(postParam);
@@ -113,8 +113,10 @@ public class Function {
 	private void setUrl(JsonElement jsonRequest) {
 		if (jsonRequest != null) {
 			String url = jsonRequest.getAsString();
-			if (Parameter.isParameter(url)) {
-				this.addParameter( new Parameter(url));
+			String[] urlParts = url.split("@");
+			
+			for(int i = 0; i < urlParts.length; i ++) {
+				if(i % 2 == 1) this.addParameter( new Parameter("@" + urlParts[i] + "@"));
 			}
 
 			this.url = url;
