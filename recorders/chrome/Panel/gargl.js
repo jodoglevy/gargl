@@ -39,7 +39,6 @@
 	const garglEditFormFunctionRequestHeadersSelector = "#editFormFunctionRequestHeaders";
 	const garglEditFormFunctionRequestQueryStringSelector = "#editFormFunctionRequestQueryString";
 	const garglEditFormFunctionRequestPostDataSelector = "#editFormFunctionRequestPostData";
-	const garglEditFormFunctionRequestPostDataMimeTypeSelector = "#editFormFunctionRequestPostDataMimeType";
 	const garglEditFormFunctionIdNumberSelector = "#garglFunctionIdNumber";
 	const garglNewResponseFieldSelector = "#garglNewResponseField";
 	const editFormFunctionResponseFieldsSelector = "#editFormFunctionResponseFields";
@@ -161,8 +160,7 @@
 		createRequestFieldForm(garglEditFormFunctionRequestQueryStringSelector, garglItem.request.queryString);
 		
 		if(garglItem.request.postData) {
-			document.querySelector(garglEditFormFunctionRequestPostDataMimeTypeSelector).value = garglItem.request.postData.mimeType;
-			createRequestFieldForm(garglEditFormFunctionRequestPostDataSelector, garglItem.request.postData.params);
+			createRequestFieldForm(garglEditFormFunctionRequestPostDataSelector, garglItem.request.postData);
 		}
 		else createRequestFieldForm(garglEditFormFunctionRequestPostDataSelector, null);
 
@@ -261,8 +259,7 @@
 		garglItem.request.queryString = grabRequestFieldFormData(garglEditFormFunctionRequestQueryStringSelector);
 		
 		if(garglItem.request.postData) {
-			garglItem.request.postData.mimeType = document.querySelector(garglEditFormFunctionRequestPostDataMimeTypeSelector).value;
-			garglItem.request.postData.params = grabRequestFieldFormData(garglEditFormFunctionRequestPostDataSelector);
+			garglItem.request.postData = grabRequestFieldFormData(garglEditFormFunctionRequestPostDataSelector);
 		}
 
 		garglItem.response.fields = grabResponseFieldFormData();
@@ -294,8 +291,8 @@
 			detailsString += "\n\nFunction Request Query String:\n" + convertRequestFieldArrayToString(garglRequest.queryString, "\n", ": ");
 		}
 
-		if(garglRequest.postData && garglRequest.postData.params && garglRequest.postData.params.length > 0) {
-			detailsString += "\n\nFunction Request Post Data:\n" + convertRequestFieldArrayToString(garglRequest.postData.params, "\n", ": ");
+		if(garglRequest.postData && garglRequest.postData.length > 0) {
+			detailsString += "\n\nFunction Request Post Data:\n" + convertRequestFieldArrayToString(garglRequest.postData, "\n", ": ");
 		}
 
 		alert(detailsString);
@@ -388,8 +385,8 @@
 		delete(item.request.cookies);
 
 		if(item.request) {
-			if(item.request.postData) delete(item.request.postData.text);
-			item.request.headers = removeUnneededHeaders(item.request.headers, /Cookie|Content-Type|Content-Length/i, false);
+			if(item.request.postData) item.request.postData = item.request.postData.params;
+			item.request.headers = removeUnneededHeaders(item.request.headers, /Cookie|Content-Length/i, false);
 		}
 
 		if(item.response) {
@@ -411,7 +408,7 @@
 				});
 			}
 
-			if(item.request.postData && item.request.postData.params) {
+			if(item.request.postData) {
 				item.request.postData.params.forEach(function(postArg) {
 					postArg.description = "";
 					postArg.name = decodeURIComponent(postArg.name);

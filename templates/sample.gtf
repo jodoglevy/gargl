@@ -83,20 +83,17 @@
 					}
 				],
 				"queryString": [],
-				"postData": {
-					"mimeType": "application/x-www-form-urlencoded",
-					"params": [
-						{
-							"name": "staticParam",
-							"value": "value2"
-						},
-						{
-							"name": "variableParam",
-							"value": "@variableParamValue@",
-							"description": "A post parameter that is user specified"
-						}
-					]
-				}
+				"postData": [
+					{
+						"name": "staticParam",
+						"value": "value2"
+					},
+					{
+						"name": "variableParam",
+						"value": "@variableParamValue@",
+						"description": "A post parameter that is user specified"
+					}
+				]
 			},
 			"response": {
 				"headers": [
