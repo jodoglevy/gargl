@@ -577,7 +577,7 @@
 			var fieldInputs = fieldElements[i].querySelectorAll("input");
 
 			var field = {
-				name: fieldInputs[0].value,
+				name: fieldInputs[0].value.replace(/ /g,"-"),
 				cssSelector: fieldInputs[1].value
 			};
 
