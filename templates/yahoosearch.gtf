@@ -1,0 +1,235 @@
+{
+	"garglSchemaVersion": "1.0",
+	"moduleVersion": "1.0",
+	"moduleName": "YahooSearch",
+	"moduleDescription": "Gargl module for Yahoo Search",
+	"functions": [
+		{
+			"request": {
+				"method": "GET",
+				"url": "http://sugg.search.yahoo.com/gossip-us-fp/",
+				"httpVersion": "HTTP/1.1",
+				"headers": [
+					{
+						"description": "",
+						"name": "Accept-Encoding",
+						"value": "gzip,deflate,sdch"
+					},
+					{
+						"description": "",
+						"name": "Host",
+						"value": "sugg.search.yahoo.com"
+					},
+					{
+						"description": "",
+						"name": "Accept-Language",
+						"value": "en-US,en;q=0.8"
+					},
+					{
+						"description": "",
+						"name": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36"
+					},
+					{
+						"description": "",
+						"name": "Accept",
+						"value": "*/*"
+					},
+					{
+						"description": "",
+						"name": "Referer",
+						"value": "http://www.yahoo.com/"
+					},
+					{
+						"description": "",
+						"name": "Connection",
+						"value": "keep-alive"
+					}
+				],
+				"queryString": [
+					{
+						"description": "",
+						"name": "nresults",
+						"value": "10"
+					},
+					{
+						"description": "",
+						"name": "queryfirst",
+						"value": "2"
+					},
+					{
+						"description": "",
+						"name": "output",
+						"value": "yjsonp"
+					},
+					{
+						"description": "",
+						"name": "version",
+						"value": ""
+					},
+					{
+						"description": "",
+						"name": "command",
+						"value": "@term@"
+					}
+				]
+			},
+			"response": {
+				"headers": [
+					{
+						"name": "Date"
+					},
+					{
+						"name": "Content-Encoding"
+					},
+					{
+						"name": "Server"
+					},
+					{
+						"name": "Age"
+					},
+					{
+						"name": "P3P"
+					},
+					{
+						"name": "Vary"
+					},
+					{
+						"name": "Content-Type"
+					},
+					{
+						"name": "Cache-Control"
+					},
+					{
+						"name": "Transfer-Encoding"
+					},
+					{
+						"name": "Connection"
+					},
+					{
+						"name": "Expires"
+					}
+				],
+				"fields": []
+			},
+			"functionName": "Autocomplete",
+			"functionDescription": "Yahoo autocomplete"
+		},
+		{
+			"request": {
+				"method": "GET",
+				"url": "http://search.yahoo.com/search",
+				"httpVersion": "HTTP/1.1",
+				"headers": [
+					{
+						"description": "",
+						"name": "Accept-Encoding",
+						"value": "gzip,deflate,sdch"
+					},
+					{
+						"description": "",
+						"name": "Host",
+						"value": "search.yahoo.com"
+					},
+					{
+						"description": "",
+						"name": "Accept-Language",
+						"value": "en-US,en;q=0.8"
+					},
+					{
+						"description": "",
+						"name": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36"
+					},
+					{
+						"description": "",
+						"name": "Accept",
+						"value": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
+					},
+					{
+						"description": "",
+						"name": "Referer",
+						"value": "http://www.yahoo.com/"
+					},
+					{
+						"description": "",
+						"name": "Connection",
+						"value": "keep-alive"
+					}
+				],
+				"queryString": [
+					{
+						"description": "",
+						"name": "p",
+						"value": "@query@"
+					},
+					{
+						"description": "",
+						"name": "toggle",
+						"value": "1"
+					},
+					{
+						"description": "",
+						"name": "cop",
+						"value": "mss"
+					},
+					{
+						"description": "",
+						"name": "ei",
+						"value": "UTF-8"
+					},
+					{
+						"description": "",
+						"name": "fr",
+						"value": "yfp-t-900"
+					}
+				]
+			},
+			"response": {
+				"headers": [
+					{
+						"name": "Date"
+					},
+					{
+						"name": "Content-Encoding"
+					},
+					{
+						"name": "Server"
+					},
+					{
+						"name": "Age"
+					},
+					{
+						"name": "P3P"
+					},
+					{
+						"name": "Vary"
+					},
+					{
+						"name": "Connection"
+					},
+					{
+						"name": "Content-Type"
+					},
+					{
+						"name": "Cache-Control"
+					},
+					{
+						"name": "Transfer-Encoding"
+					},
+					{
+						"name": "Set-Cookie"
+					}
+				],
+				"fields": [
+					{
+						"name": "searchResultTitles",
+						"cssSelector": "h3 a b"
+					}
+				]
+			},
+			"functionName": "Search",
+			"functionDescription": "search yahoo"
+		}
+	]
+}
