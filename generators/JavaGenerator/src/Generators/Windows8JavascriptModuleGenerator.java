@@ -16,6 +16,7 @@ public class Windows8JavascriptModuleGenerator extends Generator {
 	private static String JAVASCRIPT_CODE_VARIABLE_DECLARATION_FORMAT = "\t\tvar %1$s = %2$s;\n\n";
 
 	private static String JAVASCRIPT_KEYVALUE_FORMAT = "\t\t\t\"%1$s\": %2$s,\n";
+	private static String JAVASCRIPT_KEYVALUE_FORMAT2 = "\n\t\t\t\t%1$s: %2$s,";
 	
 	private static String JAVASCRIPT_MODULE_FORMAT = "(function () {\n\t" +
 		"\"use strict\";" +
@@ -31,6 +32,8 @@ public class Windows8JavascriptModuleGenerator extends Generator {
 	private static String JAVASCRIPT_FUNCTION_FORMAT = "\n\n\tfunction %1$s %2$s {\n%3$s" + 
 		"\n\t};\n";
 	
+	private static String JAVASCRIPT_GET_RESPONSE_FIELD = "\t\t\t\tvar _%1$s = holder.querySelectorAll('%2$s');\n"; 
+	
 	private static String JAVASCRIPT_XHR_FORMAT = "\t\tWinJS.xhr({\n" + 
         "\t\t\ttype: type,\n" +
         "\t\t\turl: url,\n" +
@@ -39,7 +42,14 @@ public class Windows8JavascriptModuleGenerator extends Generator {
         "\t\t})\n" + 
         "\t\t.then(\n" +
             "\t\t\tfunction (response) {\n" + 
-                "\t\t\t\tcallback(null, response);\n" +
+            	"\t\t\t\tvar holder = document.createElement('span');\n" +
+            	"\t\t\t\tholder.innerHTML = response.responseText || '';\n\n" +
+            	"%1$s\n" +
+            	"\t\t\t\tvar fullResponse = {\n" +
+		            "\t\t\t\t\tresponse: response," +
+		            "%2$s\n" +
+		            "\t\t\t\t};\n\n" +
+                "\t\t\t\tcallback(null, fullResponse);\n\n" +
            "\t\t\t},\n" + 
            "\t\t\tfunction (err) {\n" + 
                "\t\t\t\treturn callback(err);\n" + 
@@ -92,8 +102,15 @@ public class Windows8JavascriptModuleGenerator extends Generator {
 		urlStringSB.append("queryString");
 		functionBodySB.append(String.format(JAVASCRIPT_CODE_VARIABLE_DECLARATION_FORMAT, "url", urlStringSB.toString()));
 		
+		StringBuilder responseFieldsGrabSB = new StringBuilder();
+		StringBuilder responseFieldsSB = new StringBuilder();
+		Map<String,String> responseFields = function.getResponseFields();
+		for(String responseName : responseFields.keySet()) {
+			responseFieldsGrabSB.append(String.format(JAVASCRIPT_GET_RESPONSE_FIELD, responseName, responseFields.get(responseName)));
+			responseFieldsSB.append(String.format(JAVASCRIPT_KEYVALUE_FORMAT2, "\t" + responseName, "_" + responseName));
+		}
 		
-		functionBodySB.append(JAVASCRIPT_XHR_FORMAT);
+		functionBodySB.append(String.format(JAVASCRIPT_XHR_FORMAT, responseFieldsGrabSB.toString(), responseFieldsSB.toString()));
 		
 		return String.format(JAVASCRIPT_FUNCTION_FORMAT, function.getFunctionName(), parametersSB.toString(), functionBodySB.toString());
 	}

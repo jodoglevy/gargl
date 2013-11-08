@@ -22,12 +22,14 @@ public class Function {
 	private Map<String, String> queryString;
 	private String method;
 	private Map<String, String> postData;
+	private Map<String, String> responseFields;
 
 	public Function(JsonObject jsonRequest) {
 		parameters = new ArrayList<Parameter>();
 		headers = new HashMap<String, String>();
 		queryString = new HashMap<String, String>();
 		postData = new HashMap<String, String>();
+		responseFields = new HashMap<String, String>();
 
 		// Set up Request object with all properties from JSON request
 		this.setFunctionName(jsonRequest);
@@ -36,6 +38,21 @@ public class Function {
 		this.setUrl(JsonUtils.findElement(jsonRequest, "url"));
 		this.setQueryString(JsonUtils.findElement(jsonRequest, "queryString"));
 		this.setPostData(JsonUtils.findElement(jsonRequest, "postData"));
+		this.setResponseFields(JsonUtils.findElement(jsonRequest, "response"));
+	}
+	
+	private void setResponseFields(JsonElement jsonResponse) {
+		JsonElement responseFields = null;
+		if(jsonResponse != null) responseFields = JsonUtils.findElement(jsonResponse, "fields");
+		
+		if (responseFields != null) {
+			for (JsonElement responseField : JsonUtils.asJsonArray(responseFields)) {
+				JsonObject response = JsonUtils.asJsonObject(responseField);
+				String name = response.get("name").getAsString();
+				String cssSelector = response.get("cssSelector").getAsString();
+				this.addResponseField(name, cssSelector);
+			}
+		}
 	}
 
 	private void setFunctionName(JsonObject jsonRequest) {
@@ -125,6 +142,10 @@ public class Function {
 	private void addParameter(Parameter param) {
 		parameters.add(param);
 	}
+	
+	private void addResponseField(String name, String cssSelector) {
+		responseFields.put(name, cssSelector);
+	}
 
 	private void addHeader(String header, String value) {
 		headers.put(header, value);
@@ -140,6 +161,10 @@ public class Function {
 
 	public List<Parameter> getParameters() {
 		return parameters;
+	}
+	
+	public Map<String, String> getResponseFields() {
+		return responseFields;
 	}
 
 	public String getFunctionName() {

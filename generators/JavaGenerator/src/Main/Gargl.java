@@ -8,7 +8,7 @@ import Utilities.JCommanderParser;
 import com.beust.jcommander.JCommander;
 
 public class Gargl {
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 
 		// Parse command line arguments
 
@@ -48,7 +48,8 @@ public class Gargl {
 		Generator generator = null;
 		if(jct.language.equalsIgnoreCase("java")) generator = new JavaClassGenerator(mod);
 		else if (jct.language.equalsIgnoreCase("javascript-win8")) generator = new Windows8JavascriptModuleGenerator(mod); 
-
+		else throw(new Exception("Language '" + jct.language + "' has no associated generator."));
+			
 		generator.generateClass(jct.outputDirectory);
 	}
 }
