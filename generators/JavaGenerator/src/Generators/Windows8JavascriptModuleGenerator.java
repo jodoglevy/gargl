@@ -43,7 +43,7 @@ public class Windows8JavascriptModuleGenerator extends Generator {
         "\t\t.then(\n" +
             "\t\t\tfunction (response) {\n" + 
             	"\t\t\t\tvar holder = document.createElement('span');\n" +
-            	"\t\t\t\tholder.innerHTML = response.responseText || '';\n\n" +
+            	"\t\t\t\tholder.innerHTML = toStaticHTML(response.responseText) || '';\n\n" +
             	"%1$s\n" +
             	"\t\t\t\tvar fullResponse = {\n" +
 		            "\t\t\t\t\tresponse: response," +
