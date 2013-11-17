@@ -2,18 +2,18 @@ package Generators;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 import TypeDefinitions.GarglModule;
-import TypeDefinitions.Function;
 
 public abstract class Generator {
 
 	protected GarglModule module;
 
 	public Generator(GarglModule module) {
-		this.module = module;
+		setModule(module);
 	}
+	
+	public Generator() {}
 
 	/** 
 	 * This method generates a file at outputLocation using the data contained in Module
@@ -22,6 +22,10 @@ public abstract class Generator {
 	 */
 	public abstract void generateClass(String outputLocation);
 
+	public void setModule(GarglModule module) {
+		this.module = module;
+	}
+	
 	protected void writeFile(String filename, String fileContent) {
 		// Create file
 		try {

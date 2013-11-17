@@ -2,9 +2,7 @@ package Generators;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import TypeDefinitions.GarglModule;
 import TypeDefinitions.Function;
 import Utilities.Parameter;
 
@@ -55,10 +53,6 @@ public class Windows8JavascriptModuleGenerator extends Generator {
                "\t\t\t\treturn callback(err);\n" + 
            "\t\t\t}\n" +
         "\t\t);";
-	
-	public Windows8JavascriptModuleGenerator(GarglModule module){
-		super(module);
-	}
 	
 	public String generateFunction(Function function) {
 		StringBuilder parametersSB = new StringBuilder("(");

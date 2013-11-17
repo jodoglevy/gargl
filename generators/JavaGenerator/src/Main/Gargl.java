@@ -45,11 +45,14 @@ public class Gargl {
 		System.out.println("LOG: Parsed requests " + jct.inputFilename);
 
 		// Create the necessary generator based on language selected and initialize it with the Module created from file
-		Generator generator = null;
-		if(jct.language.equalsIgnoreCase("java")) generator = new JavaClassGenerator(mod);
-		else if (jct.language.equalsIgnoreCase("javascript-win8")) generator = new Windows8JavascriptModuleGenerator(mod); 
-		else System.out.println("ERROR: Language '" + jct.language + "' has no associated generator.");
-			
-		generator.generateClass(jct.outputDirectory);
+		Generator generator = GeneratorFactory.getGenerator(jct.language);
+		if(generator == null) {
+			System.out.println("ERROR: Language '" + jct.language + "' has no associated generator.");
+			System.out.println("Valid generator languages: " + GeneratorFactory.getValidGeneratorTypes().toString());
+		}
+		else {
+			generator.setModule(mod);
+			generator.generateClass(jct.outputDirectory);
+		}
 	}
 }

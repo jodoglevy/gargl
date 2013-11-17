@@ -2,7 +2,6 @@ package Generators;
 
 import java.util.Map;
 import java.util.Map.Entry;
-import TypeDefinitions.GarglModule;
 import TypeDefinitions.Function;
 import Utilities.Parameter;
 
@@ -47,10 +46,6 @@ public class JavaClassGenerator extends Generator {
 			+ "DataOutputStream wr = new DataOutputStream(con.getOutputStream());\n"
 			+ "wr.writeBytes(postData);\n" + "wr.flush();\n" + "wr.close();\n";
 
-	public JavaClassGenerator(GarglModule module){
-		super(module);
-	}
-	
 	public String generateFunction(Function function) {
 		// Generate method signature using all necessary parameters
 		String methodSignature = generateMethodSignature(function);
