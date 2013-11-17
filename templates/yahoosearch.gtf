@@ -224,7 +224,7 @@
 				"fields": [
 					{
 						"name": "searchResultTitles",
-						"cssSelector": "h3 a b"
+						"cssSelector": "h3 a"
 					}
 				]
 			},
