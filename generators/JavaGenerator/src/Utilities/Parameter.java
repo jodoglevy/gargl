@@ -33,15 +33,35 @@ public class Parameter {
 	/**
 	 * @param param String that may be a parameter
 	 * @param function Request that param is a member of
+	 * @param parameterFormatter An optional formatter used to return the parameter in a language specific structure
+	 * @return a String appropriately formatted according to whether or not param is a parameter (e.g. is surrounded by quotes or isnt)
+	 */
+	public static String processParameter(String param, Function function, String parameterFormatter){
+		return processParameterInternal(param, function, parameterFormatter);
+	}
+	
+	/**
+	 * @param param String that may be a parameter
+	 * @param function Request that param is a member of
 	 * @return a String appropriately formatted according to whether or not param is a parameter (e.g. is surrounded by quotes or isnt)
 	 */
 	public static String processParameter(String param, Function function){
+		return processParameterInternal(param, function, "%1$s");
+	}
+	
+	private static String processParameterInternal(String param, Function function, String parameterFormatter) {
 		String decodedParam = parameterDecode(param); 
+		boolean isParam = false;
+		
 		for(Parameter p : function.getParameters()) {
-			if(p.getParameterName().equals(decodedParam)) return decodedParam;
+			if(p.getParameterName().equals(decodedParam)) {
+				isParam = true;
+				break;
+			}
 		}
 		
-		return "\"" + param + "\"";
+		if(isParam) return String.format(parameterFormatter, decodedParam);
+		else return "\"" + param + "\"";
 	}
 	
 	/**
@@ -50,12 +70,29 @@ public class Parameter {
 	 * @return a List of strings representing the different parameter and non-parameter parts of the url, appropriately formatted according to whether or not each item is a parameter (e.g. is surrounded by quotes or isnt). The list items are in order of how they should be concatenated.
 	 */
 	public static List<String> processURLParameters(String url, Function function){
+		return processURLParametersInternal(url, function, "%1$s");
+	}
+	
+	/**
+	 * @param url URL string that may contain one or more parameters
+	 * @param function Request that url is a member of
+	 * @param parameterFormatter An optional formatter used to return the parameter in a language specific structure
+	 * @return a List of strings representing the different parameter and non-parameter parts of the url, appropriately formatted according to whether or not each item is a parameter (e.g. is surrounded by quotes or isnt). The list items are in order of how they should be concatenated.
+	 */
+	public static List<String> processURLParameters(String url, Function function, String parameterFormatter){
+		return processURLParametersInternal(url, function, parameterFormatter);
+	}
+	
+	private static List<String> processURLParametersInternal(String url, Function function, String parameterFormatter) {
 		String[] urlParts = url.split("@");
 		List<String> parts = new ArrayList<String>();
 		
 		for(int i = 0; i < urlParts.length; i ++) {
 			if(i % 2 == 0) {
 				urlParts[i] = "\"" + urlParts[i] + "\"";
+			}
+			else {
+				urlParts[i] = String.format(parameterFormatter, urlParts[i]);
 			}
 			
 			parts.add(urlParts[i]);
