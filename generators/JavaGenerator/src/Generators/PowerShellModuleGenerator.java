@@ -8,7 +8,13 @@ import Utilities.Parameter;
 
 public class PowerShellModuleGenerator extends Generator {
 
-	private static String POWERSHELL_MAKE_REQUEST_FORMAT = "\tInvoke-WebRequest -Uri $url -Headers $headers -Body $body -Method $method -SessionVariable $SessionVariable -WebSession $WebSession";
+	private static String POWERSHELL_MAKE_REQUEST_FORMAT = "\tif($WebSession) {\n" +
+			"\t\tInvoke-WebRequest -Uri $url -Headers $headers -Body $body -Method $method -WebSession $WebSession\n" +
+			"\t}\n" +
+			"\telse {\n" +
+			"\t\tInvoke-WebRequest -Uri $url -Headers $headers -Body $body -Method $method -SessionVariable $SessionVariable\n" + 
+			"\t\tInvoke-Expression \"`$global:$SessionVariable = `$$SessionVariable\"\n" +
+			"\t}";
 
 	private static String POWERSHELL_KEYVALUE_FORMAT = "\t\t\"%1$s\" = %2$s;\n";
 
