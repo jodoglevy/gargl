@@ -11,7 +11,7 @@ public class GeneratorFactory
 	{
 		generators = new Hashtable<String, Generator>();
 		generators.put("java", new JavaClassGenerator());
-		generators.put("javascript-win8", new Windows8JavascriptModuleGenerator());
+		generators.put("javascript", new JavascriptModuleGenerator());
 		generators.put("powershell", new PowerShellModuleGenerator());
 	}
 
