@@ -16,7 +16,12 @@ public class JavascriptModuleGenerator extends Generator {
 	private static String JAVASCRIPT_KEYVALUE_FORMAT = "\t\t\"%1$s\": %2$s,\n";
 	private static String JAVASCRIPT_KEYVALUE_FORMAT2 = "\n\t\t\t%1$s: %2$s,";
 	
-	private static String JAVASCRIPT_MODULE_FORMAT = "// This module requires JQuery.\n\n" +
+	private static String JAVASCRIPT_MODULE_FORMAT = "// This module requires jQuery.\n\n" +
+			"try {\n" +
+			"\t// Enable module to work with jQuery in Node.JS\n" +
+			"\tvar $ = require('jquery').create();\n" +
+			"}\n" +
+			"catch(e) {}\n\n" +
 			"var %1$s = {};\n\n" + 
 			"%2$s\n";
 	
@@ -24,7 +29,7 @@ public class JavascriptModuleGenerator extends Generator {
 		"\n};\n" + 
 		"if(typeof(exports) != \"undefined\") exports.%2$s = %1$s.%2$s; // For nodeJS\n";
 	
-	private static String JAVASCRIPT_GET_RESPONSE_FIELD = "\t\t\tvar _%1$s = holder.querySelectorAll('%2$s');\n"; 
+	private static String JAVASCRIPT_GET_RESPONSE_FIELD = "\t\t\tvar _%1$s = $html.find('%2$s');\n"; 
 	
 	private static String JAVASCRIPT_XHR_FORMAT = "\t$.ajax({\n" + 
         "\t\ttype: type,\n" +
@@ -32,15 +37,14 @@ public class JavascriptModuleGenerator extends Generator {
         "\t\theaders: headers,\n" +
         "\t\tdata: data,\n" +
         "\t})\n" + 
-        "\t.then(\n" +
-            "\t\tfunction (response) {\n" + 
-            	"\t\t\tresponse = response || '';\n" +
-            	"\t\t\tvar holder = document.createElement('span');\n\n" +
+        "\t.always(\n" +
+            "\t\tfunction (response, error) {\n" + 
+            	"\t\t\tresponse = response || '';\n\n" +
             	"\t\t\ttry {\n" +
-            	"\t\t\t\tholder.innerHTML = toStaticHTML(response);\n" +
+            	"\t\t\t\tvar $html = $(toStaticHTML(response));\n" +
             	"\t\t\t}\n" +
             	"\t\t\tcatch(e) {\n" +
-            	"\t\t\t\tholder.innerHTML = response;\n" +
+            	"\t\t\t\tvar $html = $(response);\n" +
             	"\t\t\t}\n\n" +
             	"%1$s\n" +
             	"\t\t\tvar fullResponse = {\n" +
@@ -48,9 +52,6 @@ public class JavascriptModuleGenerator extends Generator {
 		            "%2$s\n" +
 		            "\t\t\t};\n\n" +
                 "\t\t\tcallback(null, fullResponse);\n\n" +
-           "\t\t},\n" + 
-           "\t\tfunction (err) {\n" + 
-               "\t\t\treturn callback(err);\n" + 
            "\t\t}\n" +
         "\t);";
 	
