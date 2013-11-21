@@ -12,4 +12,5 @@ The Java Gargl Generator comes as a runnable jar. To run the Java Gargl Generato
 
 Current possible values for lang (language) are:
 - java (Java)
-- javascript-win8 (Windows 8 compatible JavaScript)
+- javascript (Browser, Windows 8 app, and Node.js compatible JavaScript)
+- powershell (PowerShell)
