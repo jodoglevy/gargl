@@ -36,16 +36,24 @@ public class JavascriptModuleGenerator extends Generator {
         "\t\turl: url,\n" +
         "\t\theaders: headers,\n" +
         "\t\tdata: data,\n" +
+        "\t\tbeforeSend: function(xmlHttpRequest) {\n" +
+        "\t\t\t// Requires node-XMLHttpRequest version 1.5.1 or later to set some headers in Node.js\n" +
+        "\t\t\tif(xmlHttpRequest.setDisableHeaderCheck) xmlHttpRequest.setDisableHeaderCheck(true);\n" +
+        "\t\t\treturn true;\n" +
+        "\t\t}\n" +
         "\t})\n" + 
         "\t.always(\n" +
             "\t\tfunction (response, error) {\n" + 
             	"\t\t\tresponse = response || '';\n\n" +
-            	"\t\t\ttry {\n" +
-            	"\t\t\t\tvar $html = $(toStaticHTML(response));\n" +
+            	"\t\t\tif (!response.responseText) {\n" +
+            	"\t\t\t\ttry {\n" +
+            	"\t\t\t\t\tvar $html = $(toStaticHTML(response));\n" +
+            	"\t\t\t\t}\n" +
+            	"\t\t\t\tcatch(e) {\n" +
+            	"\t\t\t\t\tvar $html = $(response);\n" +
+            	"\t\t\t\t}\n" +
             	"\t\t\t}\n" +
-            	"\t\t\tcatch(e) {\n" +
-            	"\t\t\t\tvar $html = $(response);\n" +
-            	"\t\t\t}\n\n" +
+            	"\t\t\telse response = response.responseText;\n" +
             	"%1$s\n" +
             	"\t\t\tvar fullResponse = {\n" +
 		            "\t\t\t\tresponse: response," +
