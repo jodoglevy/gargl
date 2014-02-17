@@ -6,6 +6,7 @@ Gargl - Generic API Recorder and Generator Lite. Pronounced "Gargle."
 
 Automate any website. Record web requests as they happen and turn them into reusable code in any programming language.
 
+Read more [here](http://jodoglevy.com/jobloglevy/?p=5).
 
 ### Folder Hierarchy:
 
