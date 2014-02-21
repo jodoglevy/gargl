@@ -1,4 +1,4 @@
-package TypeDefinitions;
+package gargl.typedefinitions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,9 +8,8 @@ import java.util.Map;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-
-import Utilities.JsonUtils;
-import Utilities.Parameter;
+import gargl.utilities.JsonUtils;
+import gargl.utilities.Parameter;
 
 public class Function {
 

@@ -1,9 +1,9 @@
-package Generators;
+package gargl.generators;
+
+import gargl.typedefinitions.GarglModule;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-
-import TypeDefinitions.GarglModule;
 
 public abstract class Generator {
 

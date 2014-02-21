@@ -1,11 +1,10 @@
-package Main;
-
-import Generators.*;
-import Main.InputParser;
-import TypeDefinitions.GarglModule;
-import Utilities.JCommanderParser;
+package gargl.main;
 
 import com.beust.jcommander.JCommander;
+import gargl.generators.Generator;
+import gargl.generators.GeneratorFactory;
+import gargl.typedefinitions.GarglModule;
+import gargl.utilities.JCommanderParser;
 
 public class Gargl {
 	public static void main(String[] args) {

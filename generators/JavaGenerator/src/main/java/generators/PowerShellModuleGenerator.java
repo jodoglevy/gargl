@@ -1,10 +1,10 @@
-package Generators;
+package gargl.generators;
+
+import gargl.typedefinitions.Function;
+import gargl.utilities.Parameter;
 
 import java.util.List;
 import java.util.Map;
-
-import TypeDefinitions.Function;
-import Utilities.Parameter;
 
 public class PowerShellModuleGenerator extends Generator {
 

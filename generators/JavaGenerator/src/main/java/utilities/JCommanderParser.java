@@ -1,4 +1,4 @@
-package Utilities;
+package gargl.utilities;
 
 import com.beust.jcommander.Parameter;
 

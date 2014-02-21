@@ -14,3 +14,19 @@ Current possible values for lang (language) are:
 - java (Java)
 - javascript (Browser, Windows 8 app, and Node.js compatible JavaScript)
 - powershell (PowerShell)
+
+### Building Source
+
+To build the code, use the `maven` build tool. Start by running the following command:
+
+    mvn compile
+
+This will make sure that the code builds and will download any dependencies you need. After this, you may start working with the code.
+
+To create an executable binary, type the following command:
+    
+    mvn package
+    
+The resulting jar should be in `target/java-generator-1.0-SNAPSHOT.jar`
+
+All of these commands must be executed in the `java-generator` directory. A pre-compiled version of jar of this generator can be found [here](generators/java-generator/build/java-generator-1.0-SNAPSHOT.jar).
