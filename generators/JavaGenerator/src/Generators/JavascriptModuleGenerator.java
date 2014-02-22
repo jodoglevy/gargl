@@ -19,7 +19,9 @@ public class JavascriptModuleGenerator extends Generator {
 	private static String JAVASCRIPT_MODULE_FORMAT = "// This module requires jQuery.\n\n" +
 			"try {\n" +
 			"\t// Enable module to work with jQuery in Node.JS\n" +
-			"\tvar $ = require('jquery').create();\n" +
+			"\tvar jsdom = require('jsdom');\n" +
+			"\tvar window = jsdom.jsdom().createWindow();\n" +
+			"\tvar $ = require('jquery')(window);\n" +
 			"}\n" +
 			"catch(e) {}\n\n" +
 			"var %1$s = {};\n\n" + 
