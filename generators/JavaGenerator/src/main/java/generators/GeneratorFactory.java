@@ -1,4 +1,4 @@
-package Generators;
+package gargl.generators;
 
 import java.util.Hashtable;
 import java.util.Set;

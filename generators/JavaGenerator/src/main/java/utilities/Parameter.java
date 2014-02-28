@@ -1,9 +1,9 @@
-package Utilities;
+package gargl.utilities;
+
+import gargl.typedefinitions.Function;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import TypeDefinitions.Function;
 
 public class Parameter {
 	

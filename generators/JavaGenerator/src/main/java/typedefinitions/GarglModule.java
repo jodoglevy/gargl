@@ -1,4 +1,4 @@
-package TypeDefinitions;
+package gargl.typedefinitions;
 
 import java.util.List;
 

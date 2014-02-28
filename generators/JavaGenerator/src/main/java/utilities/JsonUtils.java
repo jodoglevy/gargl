@@ -1,4 +1,4 @@
-package Utilities;
+package gargl.utilities;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import java.util.Queue;

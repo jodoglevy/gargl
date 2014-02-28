@@ -1,9 +1,10 @@
-package Generators;
+package gargl.generators;
+
+import gargl.typedefinitions.Function;
+import gargl.utilities.Parameter;
 
 import java.util.Map;
 import java.util.Map.Entry;
-import TypeDefinitions.Function;
-import Utilities.Parameter;
 
 public class JavaClassGenerator extends Generator {
 
