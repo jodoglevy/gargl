@@ -29,4 +29,4 @@ To create an executable binary, type the following command:
     
 The resulting jar should be in `target/JavaGenerator-1.0-SNAPSHOT.jar`
 
-All of these commands must be executed in the `JavaGenerator` directory. A pre-compiled jar of this generator can be found [here](generators/JavaGenerator/build/GarglJavaGenerator.jar).
+All of these commands must be executed in the `JavaGenerator` directory. A pre-compiled jar of this generator can be found [here](generators/JavaGenerator/bld/GarglJavaGenerator.jar).
