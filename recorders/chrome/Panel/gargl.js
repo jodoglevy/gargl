@@ -512,10 +512,17 @@
 						var matches = holder.querySelectorAll(selectorString);
 
 						if(matches.length > 0) {
-							var matchString = "Inner HTML of matching elements:\n\n"
+							var matchString = "Inner contents of matching elements:\n\n"
 							
 							for(var i = 0; i < matches.length; i ++) {
-								matchString += (matches[i].innerHTML + "\n\n")
+								var contents = null;
+
+								if(matches[i].nodeName.match(/input|textarea/i)) {
+									contents = matches[i].value;
+								}
+								else contents = matches[i].innerHTML;
+
+								matchString += (contents + "\n\n");
 							}
 
 							alert(matchString);
