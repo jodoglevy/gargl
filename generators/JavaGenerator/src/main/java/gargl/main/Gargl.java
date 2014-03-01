@@ -6,6 +6,8 @@ import gargl.generators.GeneratorFactory;
 import gargl.typedefinitions.GarglModule;
 import gargl.utilities.JCommanderParser;
 
+import java.io.File;
+
 public class Gargl {
 	public static void main(String[] args) {
 
@@ -33,8 +35,8 @@ public class Gargl {
 			// default to current working directory
 			jct.outputDirectory = "";
 		}
-		else if(jct.outputDirectory.charAt(jct.outputDirectory.length() - 1) != '\\') {
-			jct.outputDirectory = jct.outputDirectory + "\\";
+		else if(jct.outputDirectory.charAt(jct.outputDirectory.length() - 1) != File.separatorChar) {
+			jct.outputDirectory = jct.outputDirectory + File.separator;
 		}
 
 		// Read in file and convert to Module containing function name and Requests
