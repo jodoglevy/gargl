@@ -2,8 +2,8 @@ package gargl.utilities;
 
 import gargl.typedefinitions.Function;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Parameter {
 	
@@ -67,9 +67,9 @@ public class Parameter {
 	/**
 	 * @param url URL string that may contain one or more parameters
 	 * @param function Request that url is a member of
-	 * @return a List of strings representing the different parameter and non-parameter parts of the url, appropriately formatted according to whether or not each item is a parameter (e.g. is surrounded by quotes or isnt). The list items are in order of how they should be concatenated.
+	 * @return a Set of strings representing the different parameter and non-parameter parts of the url, appropriately formatted according to whether or not each item is a parameter (e.g. is surrounded by quotes or isnt). The set items are in order of how they should be concatenated.
 	 */
-	public static List<String> processURLParameters(String url, Function function){
+	public static Set<String> processURLParameters(String url, Function function){
 		return processURLParametersInternal(url, function, "%1$s");
 	}
 	
@@ -77,15 +77,15 @@ public class Parameter {
 	 * @param url URL string that may contain one or more parameters
 	 * @param function Request that url is a member of
 	 * @param parameterFormatter An optional formatter used to return the parameter in a language specific structure
-	 * @return a List of strings representing the different parameter and non-parameter parts of the url, appropriately formatted according to whether or not each item is a parameter (e.g. is surrounded by quotes or isnt). The list items are in order of how they should be concatenated.
+	 * @return a Set of strings representing the different parameter and non-parameter parts of the url, appropriately formatted according to whether or not each item is a parameter (e.g. is surrounded by quotes or isnt). The set items are in order of how they should be concatenated.
 	 */
-	public static List<String> processURLParameters(String url, Function function, String parameterFormatter){
+	public static Set<String> processURLParameters(String url, Function function, String parameterFormatter){
 		return processURLParametersInternal(url, function, parameterFormatter);
 	}
 	
-	private static List<String> processURLParametersInternal(String url, Function function, String parameterFormatter) {
+	private static Set<String> processURLParametersInternal(String url, Function function, String parameterFormatter) {
 		String[] urlParts = url.split("@");
-		List<String> parts = new ArrayList<String>();
+		Set<String> parts = new HashSet<String>();
 		
 		for(int i = 0; i < urlParts.length; i ++) {
 			if(i % 2 == 0) {
@@ -115,5 +115,18 @@ public class Parameter {
 
 	public void setParameterName(String parameterName) {
 		this.parameterName = parameterName;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if(other instanceof Parameter) {
+			return this.getParameterName().equals(this.getParameterName());
+		}
+		else return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.getParameterName().hashCode();
 	}
 }

@@ -1,8 +1,8 @@
 package gargl.typedefinitions;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Set;
 import java.util.Map;
 
 import com.google.gson.JsonArray;
@@ -14,7 +14,7 @@ import gargl.utilities.Parameter;
 public class Function {
 
 	private String functionName;
-	private List<Parameter> parameters;
+	private Set<Parameter> parameters;
 	private Map<String, String> headers;
 	private String url;
 	private String httpVersion;
@@ -24,7 +24,7 @@ public class Function {
 	private Map<String, String> responseFields;
 
 	public Function(JsonObject jsonRequest) {
-		parameters = new ArrayList<Parameter>();
+		parameters = new HashSet<Parameter>();
 		headers = new HashMap<String, String>();
 		queryString = new HashMap<String, String>();
 		postData = new HashMap<String, String>();
@@ -158,7 +158,7 @@ public class Function {
 		this.queryString.put(name, value);
 	}
 
-	public List<Parameter> getParameters() {
+	public Set<Parameter> getParameters() {
 		return parameters;
 	}
 	

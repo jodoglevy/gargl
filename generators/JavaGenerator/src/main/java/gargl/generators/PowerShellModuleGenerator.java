@@ -3,6 +3,7 @@ package gargl.generators;
 import gargl.typedefinitions.Function;
 import gargl.utilities.Parameter;
 
+import java.util.Set;
 import java.util.List;
 import java.util.Map;
 
@@ -40,7 +41,7 @@ public class PowerShellModuleGenerator extends Generator {
 	private static String POWERSHELL_PARAMETER_FORMAT = "\n\t\t[Parameter(Mandatory=$%3$s)][%1$s] $%2$s";
 	
 	public String generateFunction(String moduleName, Function function) {
-		List<Parameter> parameters = function.getParameters();
+		Set<Parameter> parameters = function.getParameters();
 		StringBuilder parametersSB = new StringBuilder("param(");
 		for(Parameter parameter : parameters) {
 			parametersSB.append(String.format(POWERSHELL_PARAMETER_FORMAT, "string", parameter.getParameterName(), "true"));
@@ -77,7 +78,7 @@ public class PowerShellModuleGenerator extends Generator {
 		postDataSB.append("\t}");
 		functionBodySB.append(String.format(POWERSHELL_CODE_VARIABLE_DECLARATION_FORMAT, "body", postDataSB.toString()));
 		
-		List<String> urlParts = Parameter.processURLParameters(function.getUrl(), function, POWERSHELL_VARIABLE_FORMAT);
+		Set<String> urlParts = Parameter.processURLParameters(function.getUrl(), function, POWERSHELL_VARIABLE_FORMAT);
 		StringBuilder urlStringSB = new StringBuilder();
 		for(String urlPart : urlParts) {
 			urlStringSB.append(urlPart);
