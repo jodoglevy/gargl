@@ -17,7 +17,7 @@ public class JavascriptModuleGenerator extends Generator {
 	private static String JAVASCRIPT_KEYVALUE_FORMAT2 = "\n\t\t\t%1$s: %2$s,";
 	
 	private static String JAVASCRIPT_MODULE_FORMAT = 
-            "This module requires jQuery. In Node.JS, jsdom is also required.\n\n" +
+            "// This module requires jQuery. In Node.JS, jsdom is also required.\n\n" +
             "try {\n" +
             "\t// Enable module to work with jQuery in Node.JS\n" +
             "\tvar jsdom = require('jsdom');\n" +
