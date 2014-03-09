@@ -17,14 +17,21 @@ public class JavascriptModuleGenerator extends Generator {
 	private static String JAVASCRIPT_KEYVALUE_FORMAT2 = "\n\t\t\t%1$s: %2$s,";
 	
 	private static String JAVASCRIPT_MODULE_FORMAT = 
-            "// This module requires jQuery. In Node.JS, jsdom is also required.\n\n" +
+            "// This module requires jQuery. In Node.JS, jsdom and xmlhttprequest are also required.\n\n" +
             "try {\n" +
             "\t// Enable module to work with jQuery in Node.JS\n" +
             "\tvar jsdom = require('jsdom');\n" +
             "\tvar window = jsdom.jsdom().createWindow();\n" +
+            "\tvar XMLHttpRequest = require('xmlhttprequest').XMLHttpRequest;\n\n" +
             "\tvar $ = require('jquery')(window);\n" +
+            "\t$.support.cors = true;\n" +
+            "\t$.ajaxSettings.xhr = function() {\n" +
+            "\t\treturn new XMLHttpRequest;\n" +
+            "\t}\n" +
             "}\n" +
-            "catch(e) {}\n\n" +
+            "catch(e) {\n" +
+            "\tconsole.log(e);\n" +
+            "}\n\n" +
             "var %1$s = {};\n\n" + 
             "%2$s\n";
 	
