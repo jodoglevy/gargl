@@ -16,14 +16,17 @@ public class JavascriptModuleGenerator extends Generator {
 	private static String JAVASCRIPT_KEYVALUE_FORMAT = "\t\t\"%1$s\": %2$s,\n";
 	private static String JAVASCRIPT_KEYVALUE_FORMAT2 = "\n\t\t\t%1$s: %2$s,";
 	
-	private static String JAVASCRIPT_MODULE_FORMAT = "// This module requires jQuery.\n\n" +
-			"try {\n" +
-			"\t// Enable module to work with jQuery in Node.JS\n" +
-			"\tvar $ = require('jquery').create();\n" +
-			"}\n" +
-			"catch(e) {}\n\n" +
-			"var %1$s = {};\n\n" + 
-			"%2$s\n";
+	private static String JAVASCRIPT_MODULE_FORMAT = 
+            "This module requires jQuery. In Node.JS, jsdom is also required.\n\n" +
+            "try {\n" +
+            "\t// Enable module to work with jQuery in Node.JS\n" +
+            "\tvar jsdom = require('jsdom');\n" +
+            "\tvar window = jsdom.jsdom().createWindow();\n" +
+            "\tvar $ = require('jquery')(window);\n" +
+            "}\n" +
+            "catch(e) {}\n\n" +
+            "var %1$s = {};\n\n" + 
+            "%2$s\n";
 	
 	private static String JAVASCRIPT_FUNCTION_FORMAT = "\n%1$s.%2$s = function %3$s {\n%4$s" + 
 		"\n};\n" + 
