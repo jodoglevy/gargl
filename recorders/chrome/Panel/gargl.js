@@ -385,7 +385,9 @@
 		delete(item.request.cookies);
 
 		if(item.request) {
-			if(item.request.postData) item.request.postData = item.request.postData.params;
+			if(item.request.postData && hasParams(item.request.postData)) {
+				item.request.postData = item.request.postData.params;
+			}
 			item.request.headers = removeUnneededHeaders(item.request.headers, /Cookie|Content-Length/i, false);
 		}
 
@@ -409,13 +411,20 @@
 			}
 
 			if(item.request.postData) {
-				item.request.postData.params.forEach(function(postArg) {
+				var postData = item.request.postData;
+				var params = hasParams(postData)?postData.params:postData;
+				params.forEach(function(postArg) {
 					postArg.description = "";
 					postArg.name = decodeURIComponent(postArg.name);
 					postArg.value = decodeURIComponent(postArg.value);
 				});
 			}
 		}
+	}
+
+	function hasParams(postData)
+	{
+		return postData.hasOwnProperty('params');
 	}
 
 	function removeUnneededHeaders(headersArray, regexForUnneeded, removeHeaderValuesFromAll) {
