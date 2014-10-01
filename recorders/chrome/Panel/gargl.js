@@ -392,10 +392,10 @@
 		}
 
 		if(item.response) {
-			var response_fields = (item.response.hasOwnProperty('fields'))?item.response.fields:[];
+			var responseFields = (item.response.fields)?item.response.fields:[];
 			item.response = {
 			        headers: removeUnneededHeaders(item.response.headers, null, true),
-			        fields: response_fields
+			        fields: responseFields
 			};
 		}
 	}
