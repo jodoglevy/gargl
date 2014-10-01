@@ -385,7 +385,7 @@
 		delete(item.request.cookies);
 
 		if(item.request) {
-			if(item.request.postData && hasParams(item.request.postData)) {
+			if(item.request.postData && item.request.postData.params) {
 				item.request.postData = item.request.postData.params;
 			}
 			item.request.headers = removeUnneededHeaders(item.request.headers, /Cookie|Content-Length/i, false);
@@ -414,7 +414,7 @@
 
 			if(item.request.postData) {
 				var postData = item.request.postData;
-				var params = hasParams(postData)?postData.params:postData;
+				var params = postData.params?postData.params:postData;
 				params.forEach(function(postArg) {
 					postArg.description = "";
 					postArg.name = decodeURIComponent(postArg.name);
@@ -422,11 +422,6 @@
 				});
 			}
 		}
-	}
-
-	function hasParams(postData)
-	{
-		return postData.hasOwnProperty('params');
 	}
 
 	function removeUnneededHeaders(headersArray, regexForUnneeded, removeHeaderValuesFromAll) {
