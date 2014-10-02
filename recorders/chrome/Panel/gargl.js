@@ -392,7 +392,7 @@
 		}
 
 		if(item.response) {
-			var responseFields = (item.response.fields)?item.response.fields:[];
+			var responseFields = item.response.fields || [];
 			item.response = {
 			        headers: removeUnneededHeaders(item.response.headers, null, true),
 			        fields: responseFields
@@ -414,7 +414,7 @@
 
 			if(item.request.postData) {
 				var postData = item.request.postData;
-				var params = postData.params?postData.params:postData;
+				var params = postData.params || postData;
 				params.forEach(function(postArg) {
 					postArg.description = "";
 					postArg.name = decodeURIComponent(postArg.name);
