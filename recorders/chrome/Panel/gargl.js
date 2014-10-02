@@ -385,13 +385,17 @@
 		delete(item.request.cookies);
 
 		if(item.request) {
-			if(item.request.postData) item.request.postData = item.request.postData.params;
+			if(item.request.postData && item.request.postData.params) {
+				item.request.postData = item.request.postData.params;
+			}
 			item.request.headers = removeUnneededHeaders(item.request.headers, /Cookie|Content-Length/i, false);
 		}
 
 		if(item.response) {
+			var responseFields = item.response.fields || [];
 			item.response = {
-				headers: removeUnneededHeaders(item.response.headers, null, true)
+			        headers: removeUnneededHeaders(item.response.headers, null, true),
+			        fields: responseFields
 			};
 		}
 	}
@@ -409,7 +413,9 @@
 			}
 
 			if(item.request.postData) {
-				item.request.postData.params.forEach(function(postArg) {
+				var postData = item.request.postData;
+				var params = postData.params || postData;
+				params.forEach(function(postArg) {
 					postArg.description = "";
 					postArg.name = decodeURIComponent(postArg.name);
 					postArg.value = decodeURIComponent(postArg.value);
