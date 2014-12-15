@@ -1,0 +1,486 @@
+{
+	"garglSchemaVersion": "1.0",
+	"moduleVersion": "1.0",
+	"moduleName": "TriviaCrack",
+	"moduleDescription": "Integrate into the Trivia Crack game (https://apps.facebook.com/triviacrack/)",
+	"functions": [
+		{
+			"request": {
+				"method": "GET",
+				"url": "https://api.preguntados.com/api/users/@UserID@",
+				"httpVersion": "HTTP/1.1",
+				"headers": [
+					{
+						"description": "",
+						"name": "Eter-Agent",
+						"value": "1|Web-FB|Chrome 39.0.2171.65|0|Windows|0|1.1||en||1"
+					},
+					{
+						"description": "",
+						"name": "Origin",
+						"value": "https://preguntados.com"
+					},
+					{
+						"description": "",
+						"name": "Accept-Encoding",
+						"value": "gzip, deflate, sdch"
+					},
+					{
+						"description": "",
+						"name": "etergames-referer",
+						"value": "true"
+					},
+					{
+						"description": "",
+						"name": "Host",
+						"value": "api.preguntados.com"
+					},
+					{
+						"description": "",
+						"name": "Accept-Language",
+						"value": "en-US,en;q=0.8"
+					},
+					{
+						"description": "",
+						"name": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.65 Safari/537.36"
+					},
+					{
+						"description": "",
+						"name": "Content-Type",
+						"value": "application/json; charset=utf-8"
+					},
+					{
+						"description": "",
+						"name": "Accept",
+						"value": "application/json, text/javascript, */*; q=0.01"
+					},
+					{
+						"description": "",
+						"name": "Referer",
+						"value": "https://preguntados.com/game/"
+					},
+					{
+						"description": "",
+						"name": "Connection",
+						"value": "keep-alive"
+					},
+					{
+						"description": "",
+						"name": "Eter-Session",
+						"value": "ap_session=undefined"
+					}
+				],
+				"queryString": [
+					{
+						"description": "Integer value representing the number of milliseconds since 1 January 1970 00:00:00 UTC (Unix Epoch).",
+						"name": "_",
+						"value": "@TimestampInMilliseconds@"
+					}
+				]
+			},
+			"response": {
+				"headers": [
+					{
+						"name": "Date"
+					},
+					{
+						"name": "Server"
+					},
+					{
+						"name": "Vary"
+					},
+					{
+						"name": "Access-Control-Allow-Methods"
+					},
+					{
+						"name": "Content-Type"
+					},
+					{
+						"name": "Access-Control-Allow-Origin"
+					},
+					{
+						"name": "Access-Control-Allow-Credentials"
+					},
+					{
+						"name": "Connection"
+					},
+					{
+						"name": "Accept-Ranges"
+					},
+					{
+						"name": "Access-Control-Allow-Headers"
+					},
+					{
+						"name": "Content-Length"
+					}
+				],
+				"fields": []
+			},
+			"connection": "745790",
+			"functionName": "GetUserData",
+			"functionDescription": "Get data about a trivia crack user"
+		},
+		{
+			"request": {
+				"method": "GET",
+				"url": "https://api.preguntados.com/api/products",
+				"httpVersion": "HTTP/1.1",
+				"headers": [
+					{
+						"description": "",
+						"name": "Eter-Agent",
+						"value": "1|Web-FB|Chrome 39.0.2171.65|0|Windows|0|1.1|en|en||1"
+					},
+					{
+						"description": "",
+						"name": "Origin",
+						"value": "https://preguntados.com"
+					},
+					{
+						"description": "",
+						"name": "Accept-Encoding",
+						"value": "gzip, deflate, sdch"
+					},
+					{
+						"description": "",
+						"name": "etergames-referer",
+						"value": "true"
+					},
+					{
+						"description": "",
+						"name": "Host",
+						"value": "api.preguntados.com"
+					},
+					{
+						"description": "",
+						"name": "Accept-Language",
+						"value": "en-US,en;q=0.8"
+					},
+					{
+						"description": "",
+						"name": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.65 Safari/537.36"
+					},
+					{
+						"description": "",
+						"name": "Content-Type",
+						"value": "application/json; charset=utf-8"
+					},
+					{
+						"description": "",
+						"name": "Accept",
+						"value": "application/json, text/javascript, */*; q=0.01"
+					},
+					{
+						"description": "",
+						"name": "Referer",
+						"value": "https://preguntados.com/game/"
+					},
+					{
+						"description": "",
+						"name": "Connection",
+						"value": "keep-alive"
+					},
+					{
+						"description": "",
+						"name": "Eter-Session",
+						"value": "ap_session=undefined"
+					}
+				],
+				"queryString": [
+					{
+						"description": "",
+						"name": "market_type",
+						"value": "FACEBOOK"
+					},
+					{
+						"description": "Integer value representing the number of milliseconds since 1 January 1970 00:00:00 UTC (Unix Epoch).",
+						"name": "_",
+						"value": "@TimestampInMilliseconds@"
+					}
+				]
+			},
+			"response": {
+				"headers": [
+					{
+						"name": "Date"
+					},
+					{
+						"name": "Server"
+					},
+					{
+						"name": "Vary"
+					},
+					{
+						"name": "Access-Control-Allow-Methods"
+					},
+					{
+						"name": "Content-Type"
+					},
+					{
+						"name": "Access-Control-Allow-Origin"
+					},
+					{
+						"name": "Access-Control-Allow-Credentials"
+					},
+					{
+						"name": "Connection"
+					},
+					{
+						"name": "Accept-Ranges"
+					},
+					{
+						"name": "Access-Control-Allow-Headers"
+					},
+					{
+						"name": "Content-Length"
+					}
+				],
+				"fields": []
+			},
+			"connection": "745790",
+			"functionName": "GetProducts",
+			"functionDescription": "Get Trivia Crack products"
+		},
+		{
+			"request": {
+				"method": "GET",
+				"url": "https://api.preguntados.com/api/users/@UserID@/dashboard",
+				"httpVersion": "HTTP/1.1",
+				"headers": [
+					{
+						"description": "",
+						"name": "Eter-Agent",
+						"value": "1|Web-FB|Chrome 39.0.2171.65|0|Windows|0|1.1|en|en||1"
+					},
+					{
+						"description": "",
+						"name": "Origin",
+						"value": "https://preguntados.com"
+					},
+					{
+						"description": "",
+						"name": "Accept-Encoding",
+						"value": "gzip, deflate, sdch"
+					},
+					{
+						"description": "",
+						"name": "etergames-referer",
+						"value": "true"
+					},
+					{
+						"description": "",
+						"name": "Host",
+						"value": "api.preguntados.com"
+					},
+					{
+						"description": "",
+						"name": "Accept-Language",
+						"value": "en-US,en;q=0.8"
+					},
+					{
+						"description": "",
+						"name": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.65 Safari/537.36"
+					},
+					{
+						"description": "",
+						"name": "Content-Type",
+						"value": "application/json; charset=utf-8"
+					},
+					{
+						"description": "",
+						"name": "Accept",
+						"value": "application/json, text/javascript, */*; q=0.01"
+					},
+					{
+						"description": "",
+						"name": "Referer",
+						"value": "https://preguntados.com/game/"
+					},
+					{
+						"description": "",
+						"name": "Connection",
+						"value": "keep-alive"
+					},
+					{
+						"description": "",
+						"name": "Eter-Session",
+						"value": "ap_session=undefined"
+					}
+				],
+				"queryString": [
+					{
+						"description": "",
+						"name": "app_config_version",
+						"value": "1418500689"
+					},
+					{
+						"description": "Integer value representing the number of milliseconds since 1 January 1970 00:00:00 UTC (Unix Epoch).",
+						"name": "_",
+						"value": "@TimestampInMilliseconds@"
+					}
+				]
+			},
+			"response": {
+				"headers": [
+					{
+						"name": "Date"
+					},
+					{
+						"name": "Server"
+					},
+					{
+						"name": "transfer-encoding"
+					},
+					{
+						"name": "Vary"
+					},
+					{
+						"name": "Access-Control-Allow-Methods"
+					},
+					{
+						"name": "Content-Type"
+					},
+					{
+						"name": "Access-Control-Allow-Origin"
+					},
+					{
+						"name": "Access-Control-Allow-Credentials"
+					},
+					{
+						"name": "Connection"
+					},
+					{
+						"name": "Accept-Ranges"
+					},
+					{
+						"name": "Access-Control-Allow-Headers"
+					}
+				],
+				"fields": []
+			},
+			"connection": "745790",
+			"functionName": "GetDashboard",
+			"functionDescription": "Get Trivia Crack Dashboard"
+		},
+		{
+			"request": {
+				"method": "GET",
+				"url": "https://api.preguntados.com/api/users/@UserID@/games/@GameID@",
+				"httpVersion": "HTTP/1.1",
+				"headers": [
+					{
+						"description": "",
+						"name": "Eter-Agent",
+						"value": "1|Web-FB|Chrome 39.0.2171.65|0|Windows|0|1.1|en|en||1"
+					},
+					{
+						"description": "",
+						"name": "Origin",
+						"value": "https://preguntados.com"
+					},
+					{
+						"description": "",
+						"name": "Accept-Encoding",
+						"value": "gzip, deflate, sdch"
+					},
+					{
+						"description": "",
+						"name": "etergames-referer",
+						"value": "true"
+					},
+					{
+						"description": "",
+						"name": "Host",
+						"value": "api.preguntados.com"
+					},
+					{
+						"description": "",
+						"name": "Accept-Language",
+						"value": "en-US,en;q=0.8"
+					},
+					{
+						"description": "",
+						"name": "User-Agent",
+						"value": "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.65 Safari/537.36"
+					},
+					{
+						"description": "",
+						"name": "Content-Type",
+						"value": "application/json; charset=utf-8"
+					},
+					{
+						"description": "",
+						"name": "Accept",
+						"value": "application/json, text/javascript, */*; q=0.01"
+					},
+					{
+						"description": "",
+						"name": "Referer",
+						"value": "https://preguntados.com/game/"
+					},
+					{
+						"description": "",
+						"name": "Connection",
+						"value": "keep-alive"
+					},
+					{
+						"description": "",
+						"name": "Eter-Session",
+						"value": "ap_session=undefined"
+					}
+				],
+				"queryString": [
+					{
+						"description": "Integer value representing the number of milliseconds since 1 January 1970 00:00:00 UTC (Unix Epoch).",
+						"name": "_",
+						"value": "@TimestampInMilliseconds@"
+					}
+				]
+			},
+			"response": {
+				"headers": [
+					{
+						"name": "Date"
+					},
+					{
+						"name": "Server"
+					},
+					{
+						"name": "Vary"
+					},
+					{
+						"name": "Access-Control-Allow-Methods"
+					},
+					{
+						"name": "Content-Type"
+					},
+					{
+						"name": "Access-Control-Allow-Origin"
+					},
+					{
+						"name": "Access-Control-Allow-Credentials"
+					},
+					{
+						"name": "Connection"
+					},
+					{
+						"name": "Accept-Ranges"
+					},
+					{
+						"name": "Access-Control-Allow-Headers"
+					},
+					{
+						"name": "Content-Length"
+					}
+				],
+				"fields": []
+			},
+			"connection": "747627",
+			"functionName": "GetGameData",
+			"functionDescription": "Get Trivia Crack game data"
+		}
+	]
+}
