@@ -78,7 +78,7 @@ public class PowerShellModuleGenerator extends Generator {
 		postDataSB.append("\t}");
 		functionBodySB.append(String.format(POWERSHELL_CODE_VARIABLE_DECLARATION_FORMAT, "body", postDataSB.toString()));
 		
-		Set<String> urlParts = Parameter.processURLParameters(function.getUrl(), function, POWERSHELL_VARIABLE_FORMAT);
+		List<String> urlParts = Parameter.processURLParameters(function.getUrl(), function, POWERSHELL_VARIABLE_FORMAT);
 		StringBuilder urlStringSB = new StringBuilder();
 		for(String urlPart : urlParts) {
 			urlStringSB.append(urlPart);

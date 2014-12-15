@@ -4,6 +4,7 @@ import gargl.typedefinitions.Function;
 import gargl.utilities.Parameter;
 
 import java.util.Set;
+import java.util.List;
 import java.util.Map;
 
 public class JavascriptModuleGenerator extends Generator {
@@ -106,7 +107,7 @@ public class JavascriptModuleGenerator extends Generator {
 		}
 		functionBodySB.append(String.format(JAVASCRIPT_CODE_VARIABLE_DECLARATION_FORMAT, "data", postDataSB.toString()));
 		
-		Set<String> urlParts = Parameter.processURLParameters(function.getUrl(), function);
+		List<String> urlParts = Parameter.processURLParameters(function.getUrl(), function);
 		StringBuilder urlStringSB = new StringBuilder();
 		for(String urlPart : urlParts) {
 			urlStringSB.append(urlPart);

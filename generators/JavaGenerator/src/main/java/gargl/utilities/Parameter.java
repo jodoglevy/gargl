@@ -4,6 +4,8 @@ import gargl.typedefinitions.Function;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
+import java.util.ArrayList;
 
 public class Parameter {
 	
@@ -69,7 +71,7 @@ public class Parameter {
 	 * @param function Request that url is a member of
 	 * @return a Set of strings representing the different parameter and non-parameter parts of the url, appropriately formatted according to whether or not each item is a parameter (e.g. is surrounded by quotes or isnt). The set items are in order of how they should be concatenated.
 	 */
-	public static Set<String> processURLParameters(String url, Function function){
+	public static List<String> processURLParameters(String url, Function function){
 		return processURLParametersInternal(url, function, "%1$s");
 	}
 	
@@ -77,15 +79,15 @@ public class Parameter {
 	 * @param url URL string that may contain one or more parameters
 	 * @param function Request that url is a member of
 	 * @param parameterFormatter An optional formatter used to return the parameter in a language specific structure
-	 * @return a Set of strings representing the different parameter and non-parameter parts of the url, appropriately formatted according to whether or not each item is a parameter (e.g. is surrounded by quotes or isnt). The set items are in order of how they should be concatenated.
+	 * @return a List of strings representing the different parameter and non-parameter parts of the url, appropriately formatted according to whether or not each item is a parameter (e.g. is surrounded by quotes or isnt). The items are in order of how they should be concatenated.
 	 */
-	public static Set<String> processURLParameters(String url, Function function, String parameterFormatter){
+	public static List<String> processURLParameters(String url, Function function, String parameterFormatter){
 		return processURLParametersInternal(url, function, parameterFormatter);
 	}
 	
-	private static Set<String> processURLParametersInternal(String url, Function function, String parameterFormatter) {
+	private static List<String> processURLParametersInternal(String url, Function function, String parameterFormatter) {
 		String[] urlParts = url.split("@");
-		Set<String> parts = new HashSet<String>();
+		List<String> parts = new ArrayList<String>();
 		
 		for(int i = 0; i < urlParts.length; i ++) {
 			if(i % 2 == 0) {
