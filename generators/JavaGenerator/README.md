@@ -14,6 +14,7 @@ Current possible values for lang (language) are:
 - java (Java)
 - javascript (Browser, Windows 8 app, and Node.js compatible JavaScript)
 - powershell (PowerShell)
+- csharp (C# .NET)
 
 ### Building Source
 

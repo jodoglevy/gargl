@@ -13,6 +13,7 @@ public class GeneratorFactory
 		generators.put("java", new JavaClassGenerator());
 		generators.put("javascript", new JavascriptModuleGenerator());
 		generators.put("powershell", new PowerShellModuleGenerator());
+		generators.put("csharp", new CSharpClassGenerator());
 	}
 
 	public static Generator getGenerator(String generatorType)
