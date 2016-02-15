@@ -19,7 +19,8 @@ The generators folder contains gargl generators for different programming langua
 #### Templates
 The templates folder contains Gargl template files which have already been recorded for various web sites, as well as a sample Gargl template file to show the schema.
 
-## Related Gargl/GTF parser implementations
+## Related Work
 * [pygargl](https://github.com/KarolTx/pygargl)
-  * dynamically loads GTFs (no compilation necessary)
-  * enables XPath queries
+  * generate python libraries from gargl template files
+  * dynamically loads gargl template files (no compilation needed)
+  * supports XPath queries
