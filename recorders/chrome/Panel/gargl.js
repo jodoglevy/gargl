@@ -555,13 +555,26 @@
 		if(garglItem.getContent) {
 			garglItem.getContent(function(content, encoding) {
 				window.URL = window.webkitURL || window.URL;
-
+				
+				var responseTextarea = document.getElementById("responseTextarea");
 				var prevLink = document.querySelector('a');
 				if (prevLink) window.URL.revokeObjectURL(prevLink.href);
 
 				var fileContents = content;
 				var bb = new Blob([fileContents], {type: 'text/plain'});
 
+
+				if (responseTextarea) { //if we already added a textare, just change value of it
+					responseTextarea.value = fileContents;		
+				} else { //if we didn't added a textarea yet, add one
+					responseTextarea = document.createElement('input');
+					responseTextarea.type = "textarea";
+					responseTextarea.id = "responseTextarea";
+					responseTextarea.value = fileContents;
+					 
+					document.querySelector(garglViewResponseHolderSelector).appendChild(responseTextarea);
+				}
+				
 				var a = prevLink || document.createElement('a');
 				a.download = "response.txt";
 				a.href = window.URL.createObjectURL(bb);
