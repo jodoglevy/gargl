@@ -571,8 +571,28 @@
 					responseTextarea.type = "textarea";
 					responseTextarea.id = "responseTextarea";
 					responseTextarea.value = fileContents;
+					
+					var garglCopyResponseBtn = document.createElement('input');
+					garglCopyResponseBtn.type = "button"
+					garglCopyResponseBtn.id = "garglCopyResponseBtn";
+					garglCopyResponseBtn.value = "Copy Response";
 					 
+					document.querySelector(garglViewResponseHolderSelector).appendChild(garglCopyResponseBtn);
 					document.querySelector(garglViewResponseHolderSelector).appendChild(responseTextarea);
+					
+					var textarea = document.getElementById("responseTextarea");
+					var copy   = document.getElementById("garglCopyResponseBtn");
+					copy.addEventListener('click', function(e) {
+						textarea.select(); 
+
+						try {
+							var successful = document.execCommand('copy');
+							if(!successful) 
+								alert('Unable to copy!');
+						} catch (err) {
+							alert('Unsupported Browser!');
+						}
+					});
 				}
 				
 				var a = prevLink || document.createElement('a');
@@ -628,8 +648,8 @@
 
 		document.querySelector(garglRecordAreaSelector).style.display = "none";
 		document.querySelector(garglOpenFormSelector).style.display = "none";
-		document.querySelector(garglEditFormSelector).style.display = "none";
-	});
+		document.querySelector(garglEditFormSelector).style.display = "none";				
+    });
 	
 	chrome.devtools.network.onRequestFinished.addListener(trackRequest);
 })();
