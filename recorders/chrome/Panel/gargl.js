@@ -571,6 +571,9 @@
 					responseTextarea.type = "textarea";
 					responseTextarea.id = "responseTextarea";
 					responseTextarea.value = fileContents;
+					responseTextarea.style.position = "fixed";
+					responseTextarea.style.zIndex = "-1";
+					responseTextarea.style.top = "-1000px";
 					
 					var garglCopyResponseBtn = document.createElement('input');
 					garglCopyResponseBtn.type = "button"
@@ -580,10 +583,8 @@
 					document.querySelector(garglViewResponseHolderSelector).appendChild(garglCopyResponseBtn);
 					document.querySelector(garglViewResponseHolderSelector).appendChild(responseTextarea);
 					
-					var textarea = document.getElementById("responseTextarea");
-					var copy   = document.getElementById("garglCopyResponseBtn");
-					copy.addEventListener('click', function(e) {
-						textarea.select(); 
+					garglCopyResponseBtn.addEventListener('click', function(e) {
+						responseTextarea.select(); 
 
 						try {
 							var successful = document.execCommand('copy');
@@ -648,8 +649,8 @@
 
 		document.querySelector(garglRecordAreaSelector).style.display = "none";
 		document.querySelector(garglOpenFormSelector).style.display = "none";
-		document.querySelector(garglEditFormSelector).style.display = "none";				
-    });
+		document.querySelector(garglEditFormSelector).style.display = "none";
+	});
 	
 	chrome.devtools.network.onRequestFinished.addListener(trackRequest);
 })();
