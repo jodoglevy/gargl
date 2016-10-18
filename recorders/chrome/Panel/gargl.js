@@ -571,8 +571,29 @@
 					responseTextarea.type = "textarea";
 					responseTextarea.id = "responseTextarea";
 					responseTextarea.value = fileContents;
+					responseTextarea.style.position = "fixed";
+					responseTextarea.style.zIndex = "-1";
+					responseTextarea.style.top = "-1000px";
+					
+					var garglCopyResponseBtn = document.createElement('input');
+					garglCopyResponseBtn.type = "button"
+					garglCopyResponseBtn.id = "garglCopyResponseBtn";
+					garglCopyResponseBtn.value = "Copy Response";
 					 
+					document.querySelector(garglViewResponseHolderSelector).appendChild(garglCopyResponseBtn);
 					document.querySelector(garglViewResponseHolderSelector).appendChild(responseTextarea);
+					
+					garglCopyResponseBtn.addEventListener('click', function(e) {
+						responseTextarea.select(); 
+
+						try {
+							var successful = document.execCommand('copy');
+							if(!successful) 
+								alert('Unable to copy!');
+						} catch (err) {
+							alert('Unsupported Browser!');
+						}
+					});
 				}
 				
 				var a = prevLink || document.createElement('a');
